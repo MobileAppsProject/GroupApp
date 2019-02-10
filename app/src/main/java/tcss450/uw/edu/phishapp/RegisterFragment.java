@@ -17,6 +17,9 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import tcss450.uw.edu.phishapp.model.Credentials;
 import tcss450.uw.edu.phishapp.utils.SendPostAsyncTask;
 
@@ -101,6 +104,12 @@ public class RegisterFragment extends Fragment {
             if (!userPassword.getText().toString().equals(userRetypePassword.getText().toString())) {
                 hasError = true;
                 userPassword.setError("Passwords do not match!.");
+            }
+            // require a special character for password
+            Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+            Matcher m = p.matcher(userPassword.getText().toString());
+            if (!m.find()) {
+                userPassword.setError("Password must include at least one special character.");
             }
 
             if (!hasError) {
