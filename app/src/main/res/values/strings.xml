@@ -14,5 +14,9 @@
     <string name="nav_header_title">aMessage</string>
     <string name="nav_header_subtitle">Group 6</string>
     <string name="nav_header_desc">Navigation header</string>
+    <string name="reg_success">Registration Successful</string>
+    <string name="reg_success_desc">You have successfully registered. Please be on the lookout for
+    an email regarding steps on how to verify your account. Once it is verified, you can login to our
+    app. Thanks!</string>
     <string name="action_settings">Settings</string>
 </resources>
