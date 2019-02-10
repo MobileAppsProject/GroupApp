@@ -1,8 +1,12 @@
 package tcss450.uw.edu.phishapp;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,6 +52,20 @@ public class LoginFragment extends Fragment {
 
         // Inflate the layout for this fragment.
         View v = inflater.inflate(R.layout.fragment_login, container, false);
+
+//        ConstraintLayout screen = (ConstraintLayout) v.findViewById(R.id.fragLogin_screen_constraintLayout);
+//        ObjectAnimator colorFade = ObjectAnimator.ofObject(screen, "backgroundColor", new ArgbEvaluator(), Color.argb(255,1,1,1), Color.WHITE);
+//        colorFade.setDuration(1000);
+//        colorFade.start();
+
+//        ObjectAnimator colorFade = ObjectAnimator.ofObject(v, "backgroundColor" /*view attribute name*/, new ArgbEvaluator(), v.getResources().getColor(Color.BLUE) /*from color*/, Color.WHITE /*to color*/);
+//        colorFade.setDuration(3500);
+//        colorFade.setStartDelay(200);
+//        colorFade.start();
+
+//        for (int i = 0; i < 65535; i+=0.01) {
+//            screen.setBackgroundColor(0xff000000 + i);
+//        }
 
         Button b = (Button) v.findViewById(R.id.fragLogin_register_button);
         //Use a method reference to add the OnClickListener

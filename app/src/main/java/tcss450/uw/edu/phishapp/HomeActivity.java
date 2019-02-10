@@ -34,6 +34,7 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Home");
         setContentView(R.layout.activity_home);
 
         if (savedInstanceState == null) {
@@ -100,16 +101,20 @@ public class HomeActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.nav_home) {
+            setTitle("Home");
             loadFragmentHelper(bundleFragment(new SuccessFragment(), "Success"));
-           //load new frag.
         } else if (id == R.id.nav_weather) {
+            setTitle("Weather");
             loadFragmentHelper(new WeatherFragment());
         } else if (id == R.id.nav_my_chats) {
+            setTitle("Chats");
             loadFragmentHelper(new ChatFragment());
         } else if (id == R.id.nav_connections) {
+            setTitle("Connections");
             loadFragmentHelper(new ConnectionsFragment());
         } else if (id == R.id.nav_search_connections) {
-           loadFragmentHelper(new SearchConnectionFragment());
+            setTitle("Search Connections");
+            loadFragmentHelper(new SearchConnectionFragment());
         }
 //        else if (id == R.id.nav_blog_post) {
 ////            Uri uri = new Uri.Builder()

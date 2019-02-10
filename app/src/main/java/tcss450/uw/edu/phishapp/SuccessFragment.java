@@ -37,8 +37,10 @@ public class SuccessFragment extends Fragment {
         if (savedInstanceState != null) {
             Credentials c = (Credentials) savedInstanceState.getSerializable("Success");
             TextView userEmail = (TextView) v.findViewById(R.id.fragSuccess_email_textView);
+            TextView weather = (TextView) v.findViewById(R.id.fragSuccess_weather_textView);
 
-            userEmail.setText(c.getEmail());
+            weather.setText("The weather is 34ºF in Tacoma, Wa");
+            userEmail.setText("Welcome, " + c.getEmail());
         }
         return v;
     }

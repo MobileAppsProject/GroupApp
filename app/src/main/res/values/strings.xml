@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Phish App</string>
+    <string name="app_name">aMessage</string>
     <string name="edit_text_login_email">Email</string>
     <string name="edit_text_username">Username</string>
     <string name="edit_text_first_name">First Name</string>
@@ -11,11 +11,8 @@
     <string name="title_activity_home">HomeActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">App Name</string>
+    <string name="nav_header_title">aMessage</string>
     <string name="nav_header_subtitle">Group 6</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
