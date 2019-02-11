@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "tcss450.uw.edu.phishapp"
+        applicationId "team6.uw.edu.phishapp"
         minSdkVersion 24
         targetSdkVersion 28
         versionCode 1
