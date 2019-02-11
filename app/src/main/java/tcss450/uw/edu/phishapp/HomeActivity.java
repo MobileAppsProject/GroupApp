@@ -66,6 +66,16 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    private void logout() {
+        //close the app
+        finishAndRemoveTask();
+        //or close this activity and bring back the Login
+        //Intent i = new Intent(this, MainActivity.class);
+        //startActivity(i);
+        //End this Activity and remove it from the Activity back stack.
+        //finish();
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -91,7 +101,10 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) return true;
+        if (id == R.id.action_logout) {
+            logout();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
