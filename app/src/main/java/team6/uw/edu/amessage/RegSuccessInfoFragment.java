@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import team6.uw.edu.amessage.model.Credentials;
+
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
