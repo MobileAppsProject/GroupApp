@@ -5,18 +5,18 @@ import java.util.List;
 
 public final class ChatGenerator {
 
-    public static final List<ChatMessage> BLOGS;
-    public static final int COUNT = 20;
+    public static final List<ChatMessage> CHAT_MESSAGES;
+    public static final int COUNT = 2;
 
 
     static {
-        BLOGS = new ArrayList<>();
+        CHAT_MESSAGES = new ArrayList<>();
         for (int i = 0; i < COUNT; i++) {
-            BLOGS.add(i, new ChatMessage
+            CHAT_MESSAGES.add(i, new ChatMessage
                     .Builder("",
-                        "Bob" + (i + 1))
-                    .addTeaser("Hey whats up are you free too........")
-                    .addUrl("Not working.")
+                        i + 1)
+                    .addTeaser("Come Chat!!!")
+//                    .addUrl("Not working.")
                     .build());
         }
     }

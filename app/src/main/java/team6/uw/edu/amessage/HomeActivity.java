@@ -126,13 +126,28 @@ public class HomeActivity extends AppCompatActivity
             loadFragmentHelper(new WeatherFragment());
         } else if (id == R.id.nav_my_chats) {
             setTitle("Chats");
-//            loadFragmentHelper(new ChatFragment());
-            Fragment chat = new LabChatFragment();
-            Bundle args = new Bundle();
-            args.putString(getString(R.string.keys_intent_credentials), myCredentials.getEmail());
-            args.putString(getString(R.string.keys_intent_jwt), mJwToken);
-            chat.setArguments(args);
-            loadFragmentHelper(chat);
+            loadFragmentHelper(new ChatFragment());
+            /*  THIS WILL ALLOW US TO DYNAMICALLY GET ALL THE CHATS.
+            Uri uri = new Uri.Builder()
+                    .scheme("https")
+                    .appendPath(getString(R.string.ep_base_url))
+                    .appendPath(getString(R.string.ep_phish))
+                    .appendPath(getString(R.string.ep_blog))
+                    .appendPath(getString(R.string.ep_get))
+                    .build();
+
+            new GetAsyncTask.Builder(uri.toString())
+                    .onPreExecute(this::onWaitFragmentInteractionShow)
+                    .onPostExecute(this::handleBlogGetOnPostExecute)
+                    .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                    .build().execute();
+              */
+//            Fragment chat = new LabChatFragment();
+//            Bundle args = new Bundle();
+//            args.putString(getString(R.string.keys_intent_credentials), myCredentials.getEmail());
+//            args.putString(getString(R.string.keys_intent_jwt), mJwToken);
+//            chat.setArguments(args);
+//            loadFragmentHelper(chat);
         } else if (id == R.id.nav_connections) {
             setTitle("Connections");
             loadFragmentHelper(new ConnectionsFragment());
@@ -154,6 +169,7 @@ public class HomeActivity extends AppCompatActivity
 
         return frag;
     }
+
     //Helper function for loading a fragment.
     private void loadFragmentHelper(Fragment frag) {
         FragmentTransaction transaction = getSupportFragmentManager()
@@ -256,12 +272,12 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(ChatMessage item) {
-        Bundle arg = new Bundle();
-        arg.putSerializable("ChatMessage", item);
-        ChatMessageFragment bp = new ChatMessageFragment();
-        bp.setArguments(arg);
-        loadFragmentHelper(bp);
-
+        Fragment chat = new ChatMessageFragment();
+            Bundle args = new Bundle();
+            args.putString(getString(R.string.keys_intent_credentials), myCredentials.getEmail());
+            args.putString(getString(R.string.keys_intent_jwt), mJwToken);
+            chat.setArguments(args);
+            loadFragmentHelper(chat);
     }
     // Deleting the Pushy device token must be done asynchronously. Good thing
     // we have something that allows us to do that.

@@ -26,7 +26,7 @@ import team6.uw.edu.amessage.chat.ChatMessage;
 public class ChatFragment extends Fragment {
 
     public static final String ARG_BLOG_LIST = "blogs lists";
-    private List<ChatMessage> mBlog;
+    private List<ChatMessage> mChat;
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
@@ -52,10 +52,10 @@ public class ChatFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mBlog = new ArrayList<ChatMessage>(
+            mChat = new ArrayList<ChatMessage>(
                     Arrays.asList((ChatMessage[]) getArguments().getSerializable(ARG_BLOG_LIST)));
         } else {
-            mBlog = ChatGenerator.BLOGS;
+            mChat = ChatGenerator.CHAT_MESSAGES;
         }
     }
 
@@ -74,7 +74,7 @@ public class ChatFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyChatRecyclerViewAdapter(mBlog, mListener));
+            recyclerView.setAdapter(new MyChatRecyclerViewAdapter(mChat, mListener));
 //            recyclerView.setAdapter(new MyChatRecyclerViewAdapter(ChatGenerator.POSTS, mListener));
         }
         return view;

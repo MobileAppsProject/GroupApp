@@ -16,9 +16,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import team6.uw.edu.amessage.chat.ChatMessage;
 import team6.uw.edu.amessage.utils.PushReceiver;
 import team6.uw.edu.amessage.utils.SendPostAsyncTask;
 
@@ -39,8 +44,6 @@ public class LabChatFragment extends Fragment {
     private String mJwToken;
     private String mSendUrl;
     private PushMessageReceiver mPushMessageReciever;
-
-
 
     public LabChatFragment() {
         // Required empty public constructor
@@ -102,7 +105,6 @@ public class LabChatFragment extends Fragment {
 
     private void handleSendClick(final View theButton) {
         String msg = mMessageInputEditText.getText().toString();
-        Log.d("Phish App", "handleSendClick: " + mEmail + ", " + msg + ", " + CHAT_ID);
 
         JSONObject messageJson = new JSONObject();
         try {
@@ -156,6 +158,65 @@ public class LabChatFragment extends Fragment {
         }
     }
 
-
+//    //This will get the parse the jason object.
+//    private void handleChatGetOnPostExecute(final String result) {
+//        //parse JSON
+//
+//        try {
+//            JSONObject root = new JSONObject(result);
+//            if (root.has(getString(R.string.keys_json_blogs_response))) {
+//                JSONObject response = root.getJSONObject(
+//                        getString(R.string.keys_json_blogs_response));
+//                if (response.has(getString(R.string.keys_json_blogs_data))) {
+//                    JSONArray data = response.getJSONArray(
+//                            getString(R.string.keys_json_blogs_data));
+//
+////                    List<ChatMessage> blogs = new ArrayList<>();
+//
+//                    for(int i = 0; i < data.length(); i++) {
+//                        JSONObject jsonBlog = data.getJSONObject(i);
+////                        Log.wtf()
+//
+////                        blogs.add(new ChatMessage.Builder(
+////                                jsonBlog.getString(
+////                                        getString(R.string.keys_json_blogs_pubdate)),
+////                                jsonBlog.getString(
+////                                        getString(R.string.keys_json_blogs_title)))
+////                                .addTeaser(jsonBlog.getString(
+////                                        getString(R.string.keys_json_blogs_teaser)))
+////                                .addUrl(jsonBlog.getString(
+////                                        getString(R.string.keys_json_blogs_url)))
+////                                .build());
+//                    }
+//
+//                    ChatMessage[] blogAsArray = new ChatMessage[blogs.size()];
+//                    blogAsArray = blogs.toArray(blogAsArray);
+//
+//                    Bundle args = new Bundle();
+//                    args.putSerializable(ChatFragment.ARG_BLOG_LIST, blogAsArray);
+//                    Fragment frag = new ChatFragment();
+//                    frag.setArguments(args);
+//
+////                    onWaitFragmentInteractionHide();
+////                    loadFragmentHelper(frag);
+//
+//                } else {
+//                    Log.e("ERROR!", "No data array");
+//                    //notify user
+////                    onWaitFragmentInteractionHide();
+//                }
+//            } else {
+//                Log.e("ERROR!", "No response");
+//                //notify user
+////                onWaitFragmentInteractionHide();
+//            }
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            Log.e("ERROR!", e.getMessage());
+//            //notify user
+////            onWaitFragmentInteractionHide();
+//        }
+//    }
 
 }

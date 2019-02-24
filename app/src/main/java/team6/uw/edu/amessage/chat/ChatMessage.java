@@ -12,9 +12,9 @@ import java.io.Serializable;
  * @version 14 September 2018
  */
 public class ChatMessage implements Serializable {
-
+    //
     private final String mPubDate;
-    private final String mTitle;
+    private final int mChatId;
     private final String mUrl;
     private final String mTeaser;
     private final String mAuthor;
@@ -26,10 +26,10 @@ public class ChatMessage implements Serializable {
      */
     public static class Builder {
         private final String mPubDate;
-        private final String mTitle;
-        private  String mUrl = "";
-        private  String mTeaser = "";
-        private  String mAuthor = "";
+        private final int mChatId;
+        private String mUrl = "";
+        private String mTeaser = "";
+        private String mAuthor = "";
 
 
         /**
@@ -38,9 +38,9 @@ public class ChatMessage implements Serializable {
          * @param pubDate the published date of the blog post
          * @param title the title of the blog post
          */
-        public Builder(String pubDate, String title) {
+        public Builder(String pubDate, int title) {
             this.mPubDate = pubDate;
-            this.mTitle = title;
+            this.mChatId = title;
         }
 
         /**
@@ -81,7 +81,7 @@ public class ChatMessage implements Serializable {
 
     private ChatMessage(final Builder builder) {
         this.mPubDate = builder.mPubDate;
-        this.mTitle = builder.mTitle;
+        this.mChatId = builder.mChatId;
         this.mUrl = builder.mUrl;
         this.mTeaser = builder.mTeaser;
         this.mAuthor = builder.mAuthor;
@@ -91,8 +91,8 @@ public class ChatMessage implements Serializable {
         return mPubDate;
     }
 
-    public String getTitle() {
-        return mTitle;
+    public int getTitle() {
+        return mChatId;
     }
 
     public String getUrl() {
