@@ -80,14 +80,11 @@ public class MainActivity extends AppCompatActivity implements
         for (int i = 0; i < count; ++i) {
             getSupportFragmentManager().popBackStack();
         }
-
+        
         args.putSerializable("Login", theUser);
-        LoginFragment loginFragment = new LoginFragment();
-        loginFragment.setArguments(args);
-        Log.wtf("Test", "In on register success" + theUser.getEmail());
-        FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.frame_main_container, loginFragment);
+        RegSuccessInfoFragment theFragment = new RegSuccessInfoFragment();
+        theFragment.setArguments(args);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().replace(R.id.frame_main_container, theFragment);
         // Commit the transaction
         transaction.commit();
     }
