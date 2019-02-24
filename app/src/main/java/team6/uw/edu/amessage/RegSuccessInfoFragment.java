@@ -15,6 +15,8 @@ import android.widget.Button;
  */
 public class RegSuccessInfoFragment extends Fragment {
 
+    private Credentials mCredentials;
+
 
     public RegSuccessInfoFragment() {
         // Required empty public constructor
@@ -29,6 +31,11 @@ public class RegSuccessInfoFragment extends Fragment {
         Button b = (Button) v.findViewById(R.id.fragRegSuccessLogin_button);
         //Use a method reference to add the OnClickListener
         b.setOnClickListener(this::onLoginButtonClicked);
+        savedInstanceState = getArguments();
+        if (savedInstanceState != null) {
+            mCredentials = (Credentials) savedInstanceState.getSerializable("Login");
+            //just passing this along to the next fragment (login)
+        }
 
         
         return v;
@@ -36,9 +43,12 @@ public class RegSuccessInfoFragment extends Fragment {
     }
 
     private void onLoginButtonClicked(View view) {
-        LoginFragment nextFrag= new LoginFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("Login", mCredentials);
+        LoginFragment loginFragment= new LoginFragment();
+        loginFragment.setArguments(args);
         getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_main_container, nextFrag)
+                .replace(R.id.frame_main_container, loginFragment)
                 .commit();
     }
 
