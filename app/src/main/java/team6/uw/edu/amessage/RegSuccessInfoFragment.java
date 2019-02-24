@@ -1,4 +1,4 @@
-package team6.uw.edu.phishapp;
+package team6.uw.edu.amessage;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

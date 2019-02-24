@@ -1,9 +1,10 @@
-package team6.uw.edu.phishapp;
+package team6.uw.edu.amessage;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -21,8 +22,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
-import team6.uw.edu.phishapp.chat.ChatMessage;
-import team6.uw.edu.phishapp.model.Credentials;
+
+import me.pushy.sdk.Pushy;
+import team6.uw.edu.amessage.chat.ChatMessage;
+import team6.uw.edu.amessage.model.Credentials;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -45,13 +48,19 @@ public class HomeActivity extends AppCompatActivity
 
             mJwToken = getIntent().getStringExtra(getString(R.string.keys_intent_jwt));
 
-            //This will bundle the information currently held in the credentials.
-            SuccessFragment successFragment = (SuccessFragment) bundleFragment(
-                                                new SuccessFragment(),"Success");
+            if (findViewById(R.id.fragmentContainer) != null) {
+                Fragment fragment;
+                if (getIntent().getBooleanExtra(getString(R.string.keys_intent_notification_msg), false)) {
+                    fragment = new LabChatFragment();
+                    Log.d("test", "onCreate: HOME ACTIVITY should open up chatFrag");
+                } else {
+                    fragment = (SuccessFragment) bundleFragment(
+                            new SuccessFragment(),"Success");
+//                     fragment.setArguments(args);
+                }
 
-            if (null != findViewById(R.id.fragmentContainer)) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragmentContainer, successFragment)
+                        .add(R.id.fragmentContainer, fragment)
                         .commit();
             }
         }
@@ -69,21 +78,7 @@ public class HomeActivity extends AppCompatActivity
     }
 
     private void logout() {
-        SharedPreferences prefs =
-                getSharedPreferences(
-                        getString(R.string.keys_shared_prefs),
-                        Context.MODE_PRIVATE);
-        //remove the saved credentials from StoredPrefs
-        prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
-        prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
-
-        //close the app
-        finishAndRemoveTask();
-        //or close this activity and bring back the Login
-        //Intent i = new Intent(this, MainActivity.class);
-        //startActivity(i);
-        //End this Activity and remove it from the Activity back stack.
-        //finish();
+        new DeleteTokenAsyncTask().execute();
     }
 
     @Override
@@ -131,7 +126,13 @@ public class HomeActivity extends AppCompatActivity
             loadFragmentHelper(new WeatherFragment());
         } else if (id == R.id.nav_my_chats) {
             setTitle("Chats");
-            loadFragmentHelper(new ChatFragment());
+//            loadFragmentHelper(new ChatFragment());
+            Fragment chat = new LabChatFragment();
+            Bundle args = new Bundle();
+            args.putString(getString(R.string.keys_intent_credentials), myCredentials.getEmail());
+            args.putString(getString(R.string.keys_intent_jwt), mJwToken);
+            chat.setArguments(args);
+            loadFragmentHelper(chat);
         } else if (id == R.id.nav_connections) {
             setTitle("Connections");
             loadFragmentHelper(new ConnectionsFragment());
@@ -139,22 +140,6 @@ public class HomeActivity extends AppCompatActivity
             setTitle("Search Connections");
             loadFragmentHelper(new SearchConnectionFragment());
         }
-//        else if (id == R.id.nav_blog_post) {
-////            Uri uri = new Uri.Builder()
-////                    .scheme("https")
-////                    .appendPath(getString(R.string.ep_base_url))
-////                    .appendPath(getString(R.string.ep_phish))
-////                    .appendPath(getString(R.string.ep_blog))
-////                    .appendPath(getString(R.string.ep_get))
-////                    .build();
-////
-////            new GetAsyncTask.Builder(uri.toString())
-////                    .onPreExecute(this::onWaitFragmentInteractionShow)
-////                    .onPostExecute(this::handleBlogGetOnPostExecute)
-////                    .addHeaderField("authorization", mJwToken) //add the JWT as a header
-////                    .build().execute();
-//
-//        }
         //This will close layout after selecting a item.
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -278,4 +263,42 @@ public class HomeActivity extends AppCompatActivity
         loadFragmentHelper(bp);
 
     }
+    // Deleting the Pushy device token must be done asynchronously. Good thing
+    // we have something that allows us to do that.
+    class DeleteTokenAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            onWaitFragmentInteractionShow();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            //since we are already doing stuff in the background, go ahead
+            //and remove the credentials from shared prefs here.
+            SharedPreferences prefs =
+                    getSharedPreferences(
+                            getString(R.string.keys_shared_prefs),
+                            Context.MODE_PRIVATE);
+
+            prefs.edit().remove(getString(R.string.keys_prefs_password)).apply();
+            prefs.edit().remove(getString(R.string.keys_prefs_email)).apply();
+
+            //unregister the device from the Pushy servers
+            Pushy.unregister(HomeActivity.this);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            //close the app
+            finishAndRemoveTask();
+
+        }
+    }
+
 }

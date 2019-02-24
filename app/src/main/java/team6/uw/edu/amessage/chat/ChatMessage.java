@@ -1,4 +1,4 @@
-package team6.uw.edu.phishapp.chat;
+package team6.uw.edu.amessage.chat;
 
 import java.io.Serializable;
 

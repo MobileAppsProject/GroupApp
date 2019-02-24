@@ -1,8 +1,9 @@
-package team6.uw.edu.phishapp;
+package team6.uw.edu.amessage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,8 +17,9 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import team6.uw.edu.phishapp.model.Credentials;
-import team6.uw.edu.phishapp.utils.SendPostAsyncTask;
+import me.pushy.sdk.Pushy;
+import team6.uw.edu.amessage.model.Credentials;
+import team6.uw.edu.amessage.utils.SendPostAsyncTask;
 
 
 /**
@@ -237,9 +239,9 @@ public class LoginFragment extends Fragment {
                 //Login was successful. Switch to the loadSuccessFragment.
                 mJwt = resultsJSON.getString(
                         getString(R.string.keys_json_login_jwt));
-
-                saveCredentials(mCredentials);
-                mListener.onLoginSuccess(mCredentials, mJwt);
+                new RegisterForPushNotificationsAsync().execute();
+//                saveCredentials(mCredentials);
+//                mListener.onLoginSuccess(mCredentials, mJwt);
 
                 return;
             } else {
@@ -252,6 +254,37 @@ public class LoginFragment extends Fragment {
         } catch (JSONException e) {
             //It appears that the web service did not return a JSON formatted
             //String or it did not have what we expected in it.
+            Log.e("JSON_PARSE_ERROR",  result
+                    + System.lineSeparator()
+                    + e.getMessage());
+
+            mListener.onWaitFragmentInteractionHide();
+            ((TextView) getView().findViewById(R.id.fragLogin_email_editText))
+                    .setError("Login Unsuccessful");
+        }
+    }
+
+    private void handlePushyTokenOnPost(String result) {
+        try {
+
+            Log.d("JSON result",result);
+            JSONObject resultsJSON = new JSONObject(result);
+            boolean success = resultsJSON.getBoolean("success");
+
+
+            if (success) {
+                saveCredentials(mCredentials);
+                mListener.onLoginSuccess(mCredentials, mJwt);
+                return;
+            } else {
+                //Saving the token wrong. Don’t switch fragments and inform the user
+                ((TextView) getView().findViewById(R.id.fragLogin_email_editText))
+                        .setError("Login Unsuccessful");
+            }
+            mListener.onWaitFragmentInteractionHide();
+        } catch (JSONException e) {
+            //It appears that the web service didn’t return a JSON formatted String
+            //or it didn’t have what we expected in it.
             Log.e("JSON_PARSE_ERROR",  result
                     + System.lineSeparator()
                     + e.getMessage());
@@ -278,4 +311,70 @@ public class LoginFragment extends Fragment {
         void onWaitFragmentInteractionShow();
         void onWaitFragmentInteractionHide();
     }
+
+    private class RegisterForPushNotificationsAsync extends AsyncTask<Void, String, String> {
+
+        protected String doInBackground(Void... params) {
+            String deviceToken = "";
+
+            try {
+                // Assign a unique token to this device
+                deviceToken = Pushy.register(getActivity().getApplicationContext());
+
+                //subscribe to a topic (this is a Blocking call)
+                Pushy.subscribe("all", getActivity().getApplicationContext());
+            }
+            catch (Exception exc) {
+
+                cancel(true);
+                // Return exc to onCancelled
+                return exc.getMessage();
+            }
+
+            // Success
+            return deviceToken;
+        }
+
+        @Override
+        protected void onCancelled(String errorMsg) {
+            super.onCancelled(errorMsg);
+            Log.d("PhishApp", "Error getting Pushy Token: " + errorMsg);
+        }
+
+        @Override
+        protected void onPostExecute(String deviceToken) {
+            // Log it for debugging purposes
+            Log.d("PhishApp", "Pushy device token: " + deviceToken);
+
+            //build the web service URL
+            Uri uri = new Uri.Builder()
+                    .scheme("https")
+                    .appendPath(getString(R.string.ep_base_url))
+                    .appendPath(getString(R.string.ep_pushy))
+                    .appendPath(getString(R.string.ep_token))
+                    .build();
+
+            //build the JSONObject
+            JSONObject msg = mCredentials.asJSONObject();
+
+            try {
+                msg.put("token", deviceToken);
+                Log.wtf("w", "THIS IS THE DEVICE TOKEN: " + deviceToken);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            //instantiate and execute the AsyncTask.
+            new SendPostAsyncTask.Builder(uri.toString(), msg)
+                    .onPostExecute(LoginFragment.this::handlePushyTokenOnPost)
+                    .onCancelled(LoginFragment.this::handleErrorsInTask)
+                    .addHeaderField("authorization", mJwt)
+                    .build().execute();
+
+
+//            saveCredentials(mCredentials);
+//            mListener.onLoginSuccess(mCredentials, mJwt);
+        }
+    }
+
 }

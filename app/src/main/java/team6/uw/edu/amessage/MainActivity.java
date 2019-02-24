@@ -1,22 +1,34 @@
-package team6.uw.edu.phishapp;
+package team6.uw.edu.amessage;
 
 import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import team6.uw.edu.phishapp.model.Credentials;
+
+import me.pushy.sdk.Pushy;
+import team6.uw.edu.amessage.model.Credentials;
 
 public class MainActivity extends AppCompatActivity implements
         LoginFragment.OnLoginFragmentInteractionListener,
         RegisterFragment.OnRegisterFragmentInteractionListener,
         WaitFragment.OnFragmentInteractionListener{
 
+    private boolean mLoadFromChatNotification = false;
+    private static final String TAG = MainActivity.class.getSimpleName();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Pushy.listen(this);
+
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getExtras().containsKey("type")) {
+                mLoadFromChatNotification = getIntent().getExtras().getString("type").equals("msg");
+            }
+        }
 
         //We make activity_main.xml to be a frame layout to put the fragment inside.
         if (savedInstanceState == null) {
@@ -53,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         //Pass the credentials to the new activity.
         intent.putExtra("Login", theUser);
+        intent.putExtra(getString(R.string.keys_intent_notification_msg), mLoadFromChatNotification);
         intent.putExtra(getString(R.string.keys_intent_jwt), jwt);
         startActivity(intent);
         finish();

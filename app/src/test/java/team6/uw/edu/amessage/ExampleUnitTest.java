@@ -1,4 +1,4 @@
-package team6.uw.edu.phishapp;
+package team6.uw.edu.amessage;
 
 import org.junit.Test;
 

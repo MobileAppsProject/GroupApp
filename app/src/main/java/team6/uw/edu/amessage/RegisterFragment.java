@@ -1,4 +1,4 @@
-package team6.uw.edu.phishapp;
+package team6.uw.edu.amessage;
 
 
 import android.content.Context;
@@ -20,8 +20,8 @@ import org.json.JSONObject;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import team6.uw.edu.phishapp.model.Credentials;
-import team6.uw.edu.phishapp.utils.SendPostAsyncTask;
+import team6.uw.edu.amessage.model.Credentials;
+import team6.uw.edu.amessage.utils.SendPostAsyncTask;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
     <string name="ep_base_url">chat450.herokuapp.com</string>
+    <!--<string name="ep_base_url">athera-lab4-backend.herokuapp.com</string>-->
+    <!--<string name="ep_base_url">localhost:5000</string>-->
     <string name="ep_login">login</string>
     <string name="ep_register">register</string>
     <string name="ep_phish">phish</string>
@@ -8,5 +10,13 @@
     <string name="ep_get">get</string>
     <string name="ep_set_list">setlists</string>
     <string name="ep_recent">recent</string>
+
+    <string name="ep_pushy">pushy</string>
+    <string name="ep_token">token</string>
+
+    <string name="ep_messaging_base">messaging</string>
+    <string name="ep_messaging_send">send</string>
+
+
 
 </resources>

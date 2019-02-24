@@ -1,4 +1,4 @@
-package team6.uw.edu.phishapp;
+package team6.uw.edu.amessage;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import team6.uw.edu.phishapp.chat.ChatMessage;
+import team6.uw.edu.amessage.chat.ChatMessage;
 
 
 /**

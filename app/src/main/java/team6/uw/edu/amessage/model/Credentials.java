@@ -1,4 +1,4 @@
-package team6.uw.edu.phishapp.model;
+package team6.uw.edu.amessage.model;
 
 import android.util.Log;
 import org.json.JSONException;

@@ -1,5 +1,5 @@
 
-package team6.uw.edu.phishapp;
+package team6.uw.edu.amessage;
 
 
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import team6.uw.edu.phishapp.model.Credentials;
+import team6.uw.edu.amessage.model.Credentials;
 
 /**
  * A simple {@link Fragment} subclass.

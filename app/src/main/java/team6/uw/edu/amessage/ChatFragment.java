@@ -1,4 +1,4 @@
-package team6.uw.edu.phishapp;
+package team6.uw.edu.amessage;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import team6.uw.edu.phishapp.chat.ChatGenerator;
-import team6.uw.edu.phishapp.chat.ChatMessage;
+import team6.uw.edu.amessage.chat.ChatGenerator;
+import team6.uw.edu.amessage.chat.ChatMessage;
 
 /**
  * A fragment representing a list of Items.
