@@ -91,7 +91,7 @@ public class ChatMessage implements Serializable {
         return mPubDate;
     }
 
-    public int getTitle() {
+    public int getChatId() {
         return mChatId;
     }
 
