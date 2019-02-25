@@ -36,7 +36,7 @@ public class MyChatRecyclerViewAdapter extends RecyclerView.Adapter<MyChatRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-//        holder.mIdView.setText(mValues.get(position).getChatId());
+        holder.mIdView.setText("Chat " + mValues.get(position).getChatId());
 //        holder.mContentView.setText(mValues.get(position).getPubDate());
         holder.mSamplingView.setText(Html.fromHtml(mValues.get(position).getTeaser()));
 

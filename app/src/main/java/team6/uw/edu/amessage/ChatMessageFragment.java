@@ -16,8 +16,11 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Iterator;
 
 import team6.uw.edu.amessage.chat.ChatMessage;
 import team6.uw.edu.amessage.utils.PushReceiver;
@@ -45,6 +48,7 @@ public class ChatMessageFragment extends Fragment {
     private String mEmail;
     private String mJwToken;
     private String mSendUrl;
+    private String mChatId;
     private PushMessageReceiver mPushMessageReciever;
 
     public ChatMessageFragment() {
@@ -80,6 +84,8 @@ public class ChatMessageFragment extends Fragment {
             //get the email and JWT from the Activity. Make sure the Keys match what you used
             mEmail = getArguments().getString(getString(R.string.keys_intent_credentials));
             mJwToken = getArguments().getString(getString(R.string.keys_intent_jwt));
+            mChatId = getArguments().getString("chatId");
+
         }
 
         //We will use this url every time the user hits send. Let's only build it once, ya?
@@ -87,11 +93,50 @@ public class ChatMessageFragment extends Fragment {
                 .scheme("https")
                 .appendPath(getString(R.string.ep_base_url))
                 .appendPath(getString(R.string.ep_messaging_base))
-                .appendPath(getString(R.string.ep_messaging_send))
+                .appendPath(getString(R.string.ep_chatmessages_get))
                 .build()
                 .toString();
+
+
+        JSONObject messageJson = new JSONObject();
+        try {
+            messageJson.put("chatId", mChatId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        new SendPostAsyncTask.Builder(mSendUrl, messageJson)
+                .onPostExecute(this::getallChatTask)
+                .onCancelled(error -> Log.e(TAG, error))
+                .addHeaderField("authorization", mJwToken)
+                .build().execute();
+
+
+
+
+
     }
 
+    private void getallChatTask(final String result) {
+        try {
+            //This is the result from the web service
+            JSONObject res = new JSONObject(result);
+            if(res.getJSONArray("messages") != null) {
+                JSONArray arr = res.getJSONArray ("messages");
+
+                for (int i = arr.length() - 1; i >= 0; i--) {
+                    JSONObject obj =  new JSONObject(arr.get(i).toString());
+                    String messageText = obj.getString("message");
+                    String sender = obj.getString("email");
+                    mMessageOutputTextView.append(sender + ":" + messageText);
+                    mMessageOutputTextView.append(System.lineSeparator());
+                    mMessageOutputTextView.append(System.lineSeparator());
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -117,10 +162,18 @@ public class ChatMessageFragment extends Fragment {
         try {
             messageJson.put("email", mEmail);
             messageJson.put("message", msg);
-            messageJson.put("chatId", CHAT_ID);
+            messageJson.put("chatId", mChatId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        mSendUrl = new Uri.Builder()
+                .scheme("https")
+                .appendPath(getString(R.string.ep_base_url))
+                .appendPath(getString(R.string.ep_messaging_base))
+                .appendPath(getString(R.string.ep_messaging_send))
+                .build()
+                .toString();
 
         new SendPostAsyncTask.Builder(mSendUrl, messageJson)
                 .onPostExecute(this::endOfSendMsgTask)
@@ -132,9 +185,9 @@ public class ChatMessageFragment extends Fragment {
     private void endOfSendMsgTask(final String result) {
         try {
             //This is the result from the web service
-            JSONObject res = new JSONObject(result);
-            Log.w("NotWorking", "This is the res: " + res);
-            if(res.has("success")  && res.getBoolean("success")) {
+            JSONObject response = new JSONObject(result);
+            Log.w("NotWorking", "This is the res: " + response);
+            if(response.has("success")  && response.getBoolean("success")) {
                 //The web service got our message. Time to clear out the input EditText
                 mMessageInputEditText.setText("");
 

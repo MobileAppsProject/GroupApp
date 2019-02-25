@@ -51,7 +51,8 @@ public class HomeActivity extends AppCompatActivity
             if (findViewById(R.id.fragmentContainer) != null) {
                 Fragment fragment;
                 if (getIntent().getBooleanExtra(getString(R.string.keys_intent_notification_msg), false)) {
-                    fragment = new LabChatFragment();
+                    fragment = new ChatMessageFragment();
+
                     Log.d("test", "onCreate: HOME ACTIVITY should open up chatFrag");
                 } else {
                     fragment = (SuccessFragment) bundleFragment(
@@ -277,6 +278,7 @@ public class HomeActivity extends AppCompatActivity
             Bundle args = new Bundle();
             args.putString(getString(R.string.keys_intent_credentials), myCredentials.getEmail());
             args.putString(getString(R.string.keys_intent_jwt), mJwToken);
+            args.putString("chatId", "" + item.getChatId());
             chat.setArguments(args);
             loadFragmentHelper(chat);
     }
