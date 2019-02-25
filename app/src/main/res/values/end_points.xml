@@ -17,6 +17,12 @@
     <string name="ep_messaging_base">messaging</string>
     <string name="ep_messaging_send">send</string>
     <string name="ep_chatmessages_get">getAll</string>
+    
+    <string name="ep_contacts_base">contacts</string>
+    <string name="ep_contacts_add">addContact</string>
+    
+    
+    
 
 
 
