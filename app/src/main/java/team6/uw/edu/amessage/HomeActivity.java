@@ -281,6 +281,15 @@ public class HomeActivity extends AppCompatActivity
             chat.setArguments(args);
             loadFragmentHelper(chat);
     }
+                            
+    @Override
+    public void onListFragmentInteraction(ContactDetail item) {
+        Bundle arg = new Bundle();
+        arg.putSerializable("ContactDetail", item);
+        ContactDetailFragment bp = new ContactDetailFragment();
+        bp.setArguments(arg);
+        loadFragmentHelper(bp);
+    }
     // Deleting the Pushy device token must be done asynchronously. Good thing
     // we have something that allows us to do that.
     class DeleteTokenAsyncTask extends AsyncTask<Void, Void, Void> {
