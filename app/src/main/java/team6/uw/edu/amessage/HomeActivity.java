@@ -26,12 +26,15 @@ import java.util.List;
 import me.pushy.sdk.Pushy;
 import team6.uw.edu.amessage.chat.ChatMessage;
 import team6.uw.edu.amessage.model.Credentials;
+import team6.uw.edu.amessage.contact.ContactDetail;
+
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
                     ChatFragment.OnListFragmentInteractionListener,
                     ChatMessageFragment.OnFragmentInteractionListener,
-                    WaitFragment.OnFragmentInteractionListener {
+                    WaitFragment.OnFragmentInteractionListener,
+                    ContactFragment.OnListFragmentInteractionListener {
 
     private Credentials myCredentials;
     private String mJwToken;
@@ -151,7 +154,7 @@ public class HomeActivity extends AppCompatActivity
 //            loadFragmentHelper(chat);
         } else if (id == R.id.nav_connections) {
             setTitle("Connections");
-            loadFragmentHelper(new ConnectionsFragment());
+            loadFragmentHelper(new ContactFragment());
         } else if (id == R.id.nav_search_connections) {
             setTitle("Search Connections");
             loadFragmentHelper(new SearchConnectionFragment());
@@ -281,6 +284,15 @@ public class HomeActivity extends AppCompatActivity
             args.putString("chatId", "" + item.getChatId());
             chat.setArguments(args);
             loadFragmentHelper(chat);
+    }
+                            
+    @Override
+    public void onListFragmentInteraction(ContactDetail item) {
+        Bundle arg = new Bundle();
+        arg.putSerializable("ContactDetail", item);
+        ContactDetailFragment bp = new ContactDetailFragment();
+        bp.setArguments(arg);
+        loadFragmentHelper(bp);
     }
     // Deleting the Pushy device token must be done asynchronously. Good thing
     // we have something that allows us to do that.
