@@ -26,6 +26,8 @@ import java.util.List;
 import me.pushy.sdk.Pushy;
 import team6.uw.edu.amessage.chat.ChatMessage;
 import team6.uw.edu.amessage.model.Credentials;
+import team6.uw.edu.amessage.contact.ContactDetail;
+
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
