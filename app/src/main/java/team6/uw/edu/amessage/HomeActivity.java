@@ -31,7 +31,8 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
                     ChatFragment.OnListFragmentInteractionListener,
                     ChatMessageFragment.OnFragmentInteractionListener,
-                    WaitFragment.OnFragmentInteractionListener {
+                    WaitFragment.OnFragmentInteractionListener,
+                    ContactFragment.OnListFragmentInteractionListener {
 
     private Credentials myCredentials;
     private String mJwToken;
@@ -150,7 +151,7 @@ public class HomeActivity extends AppCompatActivity
 //            loadFragmentHelper(chat);
         } else if (id == R.id.nav_connections) {
             setTitle("Connections");
-            loadFragmentHelper(new ConnectionsFragment());
+            loadFragmentHelper(new ContactFragment());
         } else if (id == R.id.nav_search_connections) {
             setTitle("Search Connections");
             loadFragmentHelper(new SearchConnectionFragment());
