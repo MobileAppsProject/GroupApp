@@ -17,6 +17,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +40,7 @@ public class HomeActivity extends AppCompatActivity
 
     private Credentials myCredentials;
     private String mJwToken;
+    private boolean myFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,30 +134,20 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_my_chats) {
             setTitle("Chats");
             loadFragmentHelper(new ChatFragment());
-            /*  THIS WILL ALLOW US TO DYNAMICALLY GET ALL THE CHATS.
+        } else if (id == R.id.nav_connections) {
+            setTitle("Connections");
+//            loadFragmentHelper(new ContactFragment());
             Uri uri = new Uri.Builder()
                     .scheme("https")
                     .appendPath(getString(R.string.ep_base_url))
-                    .appendPath(getString(R.string.ep_phish))
-                    .appendPath(getString(R.string.ep_blog))
-                    .appendPath(getString(R.string.ep_get))
+                    .appendPath("members")
                     .build();
-
+            Log.d("Armoni", "Hit connection: ");
             new GetAsyncTask.Builder(uri.toString())
                     .onPreExecute(this::onWaitFragmentInteractionShow)
                     .onPostExecute(this::handleBlogGetOnPostExecute)
                     .addHeaderField("authorization", mJwToken) //add the JWT as a header
                     .build().execute();
-              */
-//            Fragment chat = new LabChatFragment();
-//            Bundle args = new Bundle();
-//            args.putString(getString(R.string.keys_intent_credentials), myCredentials.getEmail());
-//            args.putString(getString(R.string.keys_intent_jwt), mJwToken);
-//            chat.setArguments(args);
-//            loadFragmentHelper(chat);
-        } else if (id == R.id.nav_connections) {
-            setTitle("Connections");
-            loadFragmentHelper(new ContactFragment());
         } else if (id == R.id.nav_search_connections) {
             setTitle("Search Connections");
             loadFragmentHelper(new SearchConnectionFragment());
@@ -214,10 +207,54 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-//    //This will get the parse the jason object.
-//    private void handleBlogGetOnPostExecute(final String result) {
-//        //parse JSON
+    //This will get the parse the jason object.
+    private void handleBlogGetOnPostExecute(final String result) {
+        Log.d("Armoni", "IN Method");
+        try {
+            //This is the result from the web service
+            JSONObject root = new JSONObject(result);
+            if(root.has("members")) {
+                Log.d("Armoni", "IN IF, " + root.toString());
+                JSONArray arr = root.getJSONArray ("members");
+                List<ContactDetail> contacts = new ArrayList<>();
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject obj = new JSONObject(arr.get(i).toString());
+                    String firstname = obj.getString("firstname");
+                    String lastname = obj.getString("lastname");
+                    String username = obj.getString("username");
+                    String memberid = obj.getString("memberid");
+                    contacts.add(new ContactDetail.Builder(firstname, lastname)
+                                    .addEmail(username)
+                                    .addUserId(memberid)
+                                    .build());
+                    Log.d("Armoni", "f: " + firstname + ", " + lastname + ", " + username);
+
+                    }
+                ContactDetail[] contactsAsArray = new ContactDetail[contacts.size()];
+                contactsAsArray = contacts.toArray(contactsAsArray);
+
+                Bundle args = new Bundle();
+                args.putSerializable(ContactFragment.ARG_BLOG_LIST, contactsAsArray);
+                Fragment frag = new ContactFragment();
+                frag.setArguments(args);
+
+                onWaitFragmentInteractionHide();
+                loadFragmentHelper(frag);
 //
+
+            } else {
+                Log.e("ERROR!", "No response");
+                //notify user
+                onWaitFragmentInteractionHide();
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+            //notify user
+            onWaitFragmentInteractionHide();
+        }
+
 //        try {
 //            JSONObject root = new JSONObject(result);
 //            if (root.has(getString(R.string.keys_json_blogs_response))) {
@@ -231,7 +268,7 @@ public class HomeActivity extends AppCompatActivity
 //
 //                    for(int i = 0; i < data.length(); i++) {
 //                        JSONObject jsonBlog = data.getJSONObject(i);
-//
+
 //                        blogs.add(new ChatMessage.Builder(
 //                                jsonBlog.getString(
 //                                        getString(R.string.keys_json_blogs_pubdate)),
@@ -239,11 +276,11 @@ public class HomeActivity extends AppCompatActivity
 //                                        getString(R.string.keys_json_blogs_title)))
 //                                .addTeaser(jsonBlog.getString(
 //                                        getString(R.string.keys_json_blogs_teaser)))
-//                                .addUrl(jsonBlog.getString(
+//                                .addEmail(jsonBlog.getString(
 //                                        getString(R.string.keys_json_blogs_url)))
 //                                .build());
 //                    }
-//
+
 //                    ChatMessage[] blogAsArray = new ChatMessage[blogs.size()];
 //                    blogAsArray = blogs.toArray(blogAsArray);
 //
@@ -265,14 +302,14 @@ public class HomeActivity extends AppCompatActivity
 //                //notify user
 //                onWaitFragmentInteractionHide();
 //            }
-//
+
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //            Log.e("ERROR!", e.getMessage());
 //            //notify user
 //            onWaitFragmentInteractionHide();
 //        }
-//    }
+    }
 
     @Override
     public void onListFragmentInteraction(ChatMessage item) {
@@ -287,12 +324,37 @@ public class HomeActivity extends AppCompatActivity
     }
                             
     @Override
-    public void onListFragmentInteraction(ContactDetail item) {
-        Bundle arg = new Bundle();
-        arg.putSerializable("ContactDetail", item);
-        ContactDetailFragment bp = new ContactDetailFragment();
-        bp.setArguments(arg);
-        loadFragmentHelper(bp);
+    public void onContactListFragmentInteraction(ContactDetail item) {
+//        myFlag = false;
+        Toast.makeText(this,
+                "Added " + item.getEmail() + " To Friends List!", Toast.LENGTH_SHORT).show();
+//        if (myFlag) {/
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            String defaultValue = sharedPref.getString("myFriends", null);
+            if (defaultValue == null) {
+                defaultValue = "";
+            } else
+            if (!defaultValue.contains(item.getEmail())) {
+                defaultValue += "\n";
+                defaultValue += item.getEmail();
+            }
+
+            Log.d("Armoni", "This is value: " + defaultValue);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("myFriends", defaultValue);
+            editor.commit();
+//            editor.putString("myFriends", "");
+//            editor.commit();
+
+//        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPref.edit();
+//        editor.putString("myFriends", ""+item.getEmail());
+//        editor.commit();
+//        Bundle arg = new Bundle();
+//        arg.putSerializable("ContactDetail", item);
+//        ContactDetailFragment bp = new ContactDetailFragment();
+//        bp.setArguments(arg);
+//        loadFragmentHelper(bp);
     }
     // Deleting the Pushy device token must be done asynchronously. Good thing
     // we have something that allows us to do that.

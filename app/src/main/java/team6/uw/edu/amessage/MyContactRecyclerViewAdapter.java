@@ -36,9 +36,9 @@ public class MyContactRecyclerViewAdapter extends RecyclerView.Adapter<MyContact
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getTitle());
+        holder.mIdView.setText(mValues.get(position).getEmail());
 //        holder.mContentView.setText(mValues.get(position).getPubDate());
-        holder.mSamplingView.setText(Html.fromHtml(mValues.get(position).getTeaser()));
+        holder.mSamplingView.setText(Html.fromHtml(mValues.get(position).getFirstName()));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +46,7 @@ public class MyContactRecyclerViewAdapter extends RecyclerView.Adapter<MyContact
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onContactListFragmentInteraction(holder.mItem);
                 }
             }
         });

@@ -56,7 +56,7 @@ public class ContactFragment extends Fragment {
             mBlog = new ArrayList<ContactDetail>(
                     Arrays.asList((ContactDetail[]) getArguments().getSerializable(ARG_BLOG_LIST)));
         } else {
-            mBlog = ContactGenerator.BLOGS;
+            mBlog = ContactGenerator.CONTACT_DETAIL_LIST;
         }
     }
 
@@ -109,6 +109,6 @@ public class ContactFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(ContactDetail item);
+        void onContactListFragmentInteraction(ContactDetail item);
     }
 }

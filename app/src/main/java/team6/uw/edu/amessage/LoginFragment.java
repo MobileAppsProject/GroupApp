@@ -234,7 +234,7 @@ public class LoginFragment extends Fragment {
             boolean success =
                     resultsJSON.getBoolean(
                             getString(R.string.keys_json_login_success));
-
+            Log.d("LOGINNOT", "handleLoginOnPost: " + success);
             if (success) {
                 //Login was successful. Switch to the loadSuccessFragment.
                 mJwt = resultsJSON.getString(

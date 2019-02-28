@@ -206,14 +206,21 @@ public class ChatMessageFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.hasExtra("SENDER") && intent.hasExtra("MESSAGE")) {
+            if(intent.hasExtra("SENDER") && intent.hasExtra("MESSAGE")
+                                && intent.hasExtra("CHATID")) {
 
                 String sender = intent.getStringExtra("SENDER");
+//                String chatId = intent.get
                 String messageText = intent.getStringExtra("MESSAGE");
-
-                mMessageOutputTextView.append(sender + ":" + messageText);
-                mMessageOutputTextView.append(System.lineSeparator());
-                mMessageOutputTextView.append(System.lineSeparator());
+                String chatId = intent.getStringExtra("CHATID");
+                if (Integer.parseInt(chatId) == Integer.parseInt(mChatId)) {
+                    mMessageOutputTextView.append(sender + ":" + messageText + "CHATID: "+ chatId);
+                    mMessageOutputTextView.append(System.lineSeparator());
+                    mMessageOutputTextView.append(System.lineSeparator());
+                }
+//                mMessageOutputTextView.append(sender + ":" + messageText + "CHATID: "+ chatId);
+//                mMessageOutputTextView.append(System.lineSeparator());
+//                mMessageOutputTextView.append(System.lineSeparator());
             }
         }
 

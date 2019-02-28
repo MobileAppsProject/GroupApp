@@ -13,10 +13,10 @@ import java.io.Serializable;
  */
 public class ContactDetail implements Serializable {
 
-    private final String mPubDate;
-    private final String mTitle;
-    private final String mUrl;
-    private final String mTeaser;
+    private final String mFirstName;
+    private final String mLastName;
+    private final String mEmail;
+    private final String mUserId;
     private final String mAuthor;
 
     /**
@@ -25,10 +25,10 @@ public class ContactDetail implements Serializable {
      * @author Charles Bryan
      */
     public static class Builder {
-        private final String mPubDate;
-        private final String mTitle;
-        private  String mUrl = "";
-        private  String mTeaser = "";
+        private final String mFirstName;
+        private final String mLastName;
+        private  String mEmail = "";
+        private  String mUserId = "";
         private  String mAuthor = "";
 
 
@@ -39,8 +39,8 @@ public class ContactDetail implements Serializable {
          * @param title the title of the blog post
          */
         public Builder(String pubDate, String title) {
-            this.mPubDate = pubDate;
-            this.mTitle = title;
+            this.mFirstName = pubDate;
+            this.mLastName = title;
         }
 
         /**
@@ -48,8 +48,8 @@ public class ContactDetail implements Serializable {
          * @param val an optional url for the full blog post
          * @return the Builder of this ContactDetail
          */
-        public Builder addUrl(final String val) {
-            mUrl = val;
+        public Builder addEmail(final String val) {
+            mEmail = val;
             return this;
         }
 
@@ -58,8 +58,8 @@ public class ContactDetail implements Serializable {
          * @param val an optional url teaser for the full blog post.
          * @return the Builder of this ContactDetail
          */
-        public Builder addTeaser(final String val) {
-            mTeaser = val;
+        public Builder addUserId(final String val) {
+            mUserId = val;
             return this;
         }
 
@@ -80,27 +80,27 @@ public class ContactDetail implements Serializable {
     }
 
     private ContactDetail(final Builder builder) {
-        this.mPubDate = builder.mPubDate;
-        this.mTitle = builder.mTitle;
-        this.mUrl = builder.mUrl;
-        this.mTeaser = builder.mTeaser;
+        this.mFirstName = builder.mFirstName;
+        this.mLastName = builder.mLastName;
+        this.mEmail = builder.mEmail;
+        this.mUserId = builder.mUserId;
         this.mAuthor = builder.mAuthor;
     }
 
-    public String getPubDate() {
-        return mPubDate;
+    public String getFirstName() {
+        return mFirstName;
     }
 
-    public String getTitle() {
-        return mTitle;
+    public String getLastName() {
+        return mLastName;
     }
 
-    public String getUrl() {
-        return mUrl;
+    public String getEmail() {
+        return mEmail;
     }
 
-    public String getTeaser() {
-        return mTeaser;
+    public String getUserId() {
+        return mUserId;
     }
 
     public String getAuthor() {

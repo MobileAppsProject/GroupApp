@@ -184,7 +184,7 @@ public class LabChatFragment extends Fragment {
 ////                                        getString(R.string.keys_json_blogs_title)))
 ////                                .addTeaser(jsonBlog.getString(
 ////                                        getString(R.string.keys_json_blogs_teaser)))
-////                                .addUrl(jsonBlog.getString(
+////                                .addEmail(jsonBlog.getString(
 ////                                        getString(R.string.keys_json_blogs_url)))
 ////                                .build());
 //                    }
