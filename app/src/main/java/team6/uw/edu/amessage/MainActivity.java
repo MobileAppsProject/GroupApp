@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements
 
     //This method could be used for communicating between fragments
     @Override
-    public void onLoginSuccess(Credentials theUser, String jwt) {
+    public void onLoginSuccess(Credentials theUser, String jwt, String memberid) {
         Bundle args = new Bundle();
 
         int count = getSupportFragmentManager().getBackStackEntryCount();
@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements
         intent.putExtra("Login", theUser);
         intent.putExtra(getString(R.string.keys_intent_notification_msg), mLoadFromChatNotification);
         intent.putExtra(getString(R.string.keys_intent_jwt), jwt);
+        intent.putExtra("memberid", memberid);
         startActivity(intent);
         finish();
     }

@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list"
-    android:name="tcss450.uw.edu.phishapp.ChatFragment"
+    android:name="team6.uw.edu.amessage.ConnectionsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="16dp"
     android:layout_marginTop="60dp"
     android:layout_marginRight="16dp"
     app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-    tools:context=".ChatFragment"
-    tools:listitem="@layout/fragment_chat" />
+    tools:context=".ConnectionsFragment"
+    tools:listitem="@layout/fragment_connections" />
+

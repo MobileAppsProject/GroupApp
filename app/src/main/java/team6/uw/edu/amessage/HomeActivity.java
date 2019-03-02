@@ -29,6 +29,7 @@ import me.pushy.sdk.Pushy;
 import team6.uw.edu.amessage.chat.ChatMessage;
 import team6.uw.edu.amessage.model.Credentials;
 import team6.uw.edu.amessage.contact.ContactDetail;
+import team6.uw.edu.amessage.utils.SendPostAsyncTask;
 
 
 public class HomeActivity extends AppCompatActivity
@@ -36,10 +37,16 @@ public class HomeActivity extends AppCompatActivity
                     ChatFragment.OnListFragmentInteractionListener,
                     ChatMessageFragment.OnFragmentInteractionListener,
                     WaitFragment.OnFragmentInteractionListener,
-                    ContactFragment.OnListFragmentInteractionListener {
+                    ConnectionsFragment.OnListFragmentInteractionListener,
+                    ContactsFragment.OnPendingListFragmentInteractionListener,
+        ContactsFragment.OnAcceptedListFragmentInteractionListener{
 
     private Credentials myCredentials;
     private String mJwToken;
+    private String mMemberID;
+    private Bundle mContactArgs;
+
+
     private boolean myFlag;
 
     @Override
@@ -53,6 +60,7 @@ public class HomeActivity extends AppCompatActivity
             myCredentials = (Credentials)getIntent().getSerializableExtra("Login");
 
             mJwToken = getIntent().getStringExtra(getString(R.string.keys_intent_jwt));
+            mMemberID = getIntent().getStringExtra("memberid");
 
             if (findViewById(R.id.fragmentContainer) != null) {
                 Fragment fragment;
@@ -136,21 +144,42 @@ public class HomeActivity extends AppCompatActivity
             loadFragmentHelper(new ChatFragment());
         } else if (id == R.id.nav_connections) {
             setTitle("Connections");
-//            loadFragmentHelper(new ContactFragment());
             Uri uri = new Uri.Builder()
                     .scheme("https")
                     .appendPath(getString(R.string.ep_base_url))
                     .appendPath("members")
                     .build();
-            Log.d("Armoni", "Hit connection: ");
             new GetAsyncTask.Builder(uri.toString())
                     .onPreExecute(this::onWaitFragmentInteractionShow)
-                    .onPostExecute(this::handleBlogGetOnPostExecute)
+                    .onPostExecute(this::handleConnectionsGetOnPostExecute)
                     .addHeaderField("authorization", mJwToken) //add the JWT as a header
                     .build().execute();
-        } else if (id == R.id.nav_search_connections) {
-            setTitle("Search Connections");
-            loadFragmentHelper(new SearchConnectionFragment());
+        } else if (id == R.id.nav_contacts) {
+            setTitle("Contacts");
+
+            mContactArgs = new Bundle();
+
+            //Post for pending requests
+            String uri = new Uri.Builder()
+                    .scheme("https")
+                    .appendPath(getString(R.string.ep_base_url))
+                    .appendPath("contacts")
+                    .appendPath("pending")
+                    .build().toString();
+
+            JSONObject messageJson = new JSONObject();
+            try {
+                messageJson.put("memberid", mMemberID);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            new SendPostAsyncTask.Builder(uri, messageJson)
+                    .onPreExecute(this::onWaitFragmentInteractionShow)
+                    .onPostExecute(this::handleContactPendingOnPostExecute)
+                    .onCancelled(error -> Log.e("HomeActivity", error))
+                    .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                    .build().execute();
+
         }
         //This will close layout after selecting a item.
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -189,6 +218,8 @@ public class HomeActivity extends AppCompatActivity
     //This will load the wait fragment.
     @Override
     public void onWaitFragmentInteractionShow() {
+        Log.d("HomeActivity", "hey");
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragmentContainer, new WaitFragment(), "WAIT")
@@ -207,15 +238,13 @@ public class HomeActivity extends AppCompatActivity
 
     }
 
-    //This will get the parse the jason object.
-    private void handleBlogGetOnPostExecute(final String result) {
-        Log.d("Armoni", "IN Method");
+    // Handles the results of getting all accepted contacts
+    private void handleContactAcceptedOnPostExecute(final String result) {
         try {
             //This is the result from the web service
             JSONObject root = new JSONObject(result);
-            if(root.has("members")) {
-                Log.d("Armoni", "IN IF, " + root.toString());
-                JSONArray arr = root.getJSONArray ("members");
+            if(root.getBoolean("success") == true) {
+                JSONArray arr = root.getJSONArray ("myContacts");
                 List<ContactDetail> contacts = new ArrayList<>();
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = new JSONObject(arr.get(i).toString());
@@ -223,24 +252,26 @@ public class HomeActivity extends AppCompatActivity
                     String lastname = obj.getString("lastname");
                     String username = obj.getString("username");
                     String memberid = obj.getString("memberid");
+                    String email = obj.getString("email");
                     contacts.add(new ContactDetail.Builder(firstname, lastname)
-                                    .addEmail(username)
-                                    .addUserId(memberid)
-                                    .build());
-                    Log.d("Armoni", "f: " + firstname + ", " + lastname + ", " + username);
+                            .addAuthor(username)
+                            .addEmail(email)
+                            .addUserId(memberid)
+                            .build());
 
-                    }
-                ContactDetail[] contactsAsArray = new ContactDetail[contacts.size()];
-                contactsAsArray = contacts.toArray(contactsAsArray);
+                }
 
-                Bundle args = new Bundle();
-                args.putSerializable(ContactFragment.ARG_BLOG_LIST, contactsAsArray);
-                Fragment frag = new ContactFragment();
-                frag.setArguments(args);
+                ContactDetail[] ContactsAsArray = new ContactDetail[contacts.size()];
+                ContactsAsArray = contacts.toArray(ContactsAsArray);
+
+                mContactArgs.putSerializable("acceptedcontacts", ContactsAsArray);
+
+
+                Fragment frag = new ContactsFragment();
+                frag.setArguments(mContactArgs);
+                loadFragmentHelper(frag);
 
                 onWaitFragmentInteractionHide();
-                loadFragmentHelper(frag);
-//
 
             } else {
                 Log.e("ERROR!", "No response");
@@ -254,61 +285,116 @@ public class HomeActivity extends AppCompatActivity
             //notify user
             onWaitFragmentInteractionHide();
         }
+    }
 
-//        try {
-//            JSONObject root = new JSONObject(result);
-//            if (root.has(getString(R.string.keys_json_blogs_response))) {
-//                JSONObject response = root.getJSONObject(
-//                        getString(R.string.keys_json_blogs_response));
-//                if (response.has(getString(R.string.keys_json_blogs_data))) {
-//                    JSONArray data = response.getJSONArray(
-//                            getString(R.string.keys_json_blogs_data));
-//
-//                    List<ChatMessage> blogs = new ArrayList<>();
-//
-//                    for(int i = 0; i < data.length(); i++) {
-//                        JSONObject jsonBlog = data.getJSONObject(i);
+    private void handleContactPendingOnPostExecute(final String result) {
+        try {
+            //This is the result from the web service
+            JSONObject root = new JSONObject(result);
+            if(root.getBoolean("success") == true) {
+                JSONArray arr = root.getJSONArray ("myRequests");
+                List<ContactDetail> contacts = new ArrayList<>();
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject obj = new JSONObject(arr.get(i).toString());
+                    String firstname = obj.getString("firstname");
+                    String lastname = obj.getString("lastname");
+                    String username = obj.getString("username");
+                    String memberid = obj.getString("memberid");
+                    String email = obj.getString("email");
+                    contacts.add(new ContactDetail.Builder(firstname, lastname)
+                            .addAuthor(username)
+                            .addEmail(email)
+                            .addUserId(memberid)
+                            .build());
 
-//                        blogs.add(new ChatMessage.Builder(
-//                                jsonBlog.getString(
-//                                        getString(R.string.keys_json_blogs_pubdate)),
-//                                jsonBlog.getString(
-//                                        getString(R.string.keys_json_blogs_title)))
-//                                .addTeaser(jsonBlog.getString(
-//                                        getString(R.string.keys_json_blogs_teaser)))
-//                                .addEmail(jsonBlog.getString(
-//                                        getString(R.string.keys_json_blogs_url)))
-//                                .build());
-//                    }
+                }
 
-//                    ChatMessage[] blogAsArray = new ChatMessage[blogs.size()];
-//                    blogAsArray = blogs.toArray(blogAsArray);
-//
-//                    Bundle args = new Bundle();
-//                    args.putSerializable(ChatFragment.ARG_BLOG_LIST, blogAsArray);
-//                    Fragment frag = new ChatFragment();
-//                    frag.setArguments(args);
-//
-//                    onWaitFragmentInteractionHide();
-//                    loadFragmentHelper(frag);
-//
-//                } else {
-//                    Log.e("ERROR!", "No data array");
-//                    //notify user
-//                    onWaitFragmentInteractionHide();
-//                }
-//            } else {
-//                Log.e("ERROR!", "No response");
-//                //notify user
-//                onWaitFragmentInteractionHide();
-//            }
+                ContactDetail[] ContactsAsArray = new ContactDetail[contacts.size()];
+                ContactsAsArray = contacts.toArray(ContactsAsArray);
 
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//            Log.e("ERROR!", e.getMessage());
-//            //notify user
-//            onWaitFragmentInteractionHide();
-//        }
+                mContactArgs.putSerializable("pendingcontacts", ContactsAsArray);
+
+                //Post for accepted contact requests
+                String uri = new Uri.Builder()
+                        .scheme("https")
+                        .appendPath(getString(R.string.ep_base_url))
+                        .appendPath("contacts")
+                        .appendPath("myContacts")
+                        .build().toString();
+
+                JSONObject messageJson = new JSONObject();
+                try {
+                    messageJson.put("memberid", mMemberID);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                new SendPostAsyncTask.Builder(uri, messageJson)
+                        .onPreExecute(this::onWaitFragmentInteractionShow)
+                        .onPostExecute(this::handleContactAcceptedOnPostExecute)
+                        .onCancelled(error -> Log.e("HomeActivity", error))
+                        .addHeaderField("authorization", mJwToken) //add the JWT as a header
+                        .build().execute();
+
+
+                onWaitFragmentInteractionHide();
+
+            } else {
+                Log.e("ERROR!", "No response");
+                //notify user
+                onWaitFragmentInteractionHide();
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+            //notify user
+            onWaitFragmentInteractionHide();
+        }
+    }
+    //This will get the parse the jason object.
+    private void handleConnectionsGetOnPostExecute(final String result) {
+        try {
+            //This is the result from the web service
+            JSONObject root = new JSONObject(result);
+            if(root.has("members")) {
+                JSONArray arr = root.getJSONArray ("members");
+                List<ContactDetail> contacts = new ArrayList<>();
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject obj = new JSONObject(arr.get(i).toString());
+                    String firstname = obj.getString("firstname");
+                    String lastname = obj.getString("lastname");
+                    String username = obj.getString("username");
+                    String email = obj.getString("email");
+                    String memberid = obj.getString("memberid");
+                    contacts.add(new ContactDetail.Builder(firstname, lastname)
+                                    .addEmail(email)
+                                    .addAuthor(username)
+                                    .addUserId(memberid)
+                                    .build());
+                    }
+                ContactDetail[] contactsAsArray = new ContactDetail[contacts.size()];
+                contactsAsArray = contacts.toArray(contactsAsArray);
+
+                Bundle args = new Bundle();
+                args.putSerializable(ConnectionsFragment.ARG_BLOG_LIST, contactsAsArray);
+                Fragment frag = new ConnectionsFragment();
+                frag.setArguments(args);
+
+                onWaitFragmentInteractionHide();
+                loadFragmentHelper(frag);
+
+            } else {
+                Log.e("ERROR!", "No response");
+                //notify user
+                onWaitFragmentInteractionHide();
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+            //notify user
+            onWaitFragmentInteractionHide();
+        }
     }
 
     @Override
@@ -324,10 +410,10 @@ public class HomeActivity extends AppCompatActivity
     }
                             
     @Override
-    public void onContactListFragmentInteraction(ContactDetail item) {
+    public void onConnectionsListFragmentInteraction(ContactDetail item) {
 //        myFlag = false;
         Toast.makeText(this,
-                "Added " + item.getEmail() + " To Friends List!", Toast.LENGTH_SHORT).show();
+                "Sent " + item.getEmail() + " a friend request!", Toast.LENGTH_LONG).show();
 //        if (myFlag) {/
             SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
             String defaultValue = sharedPref.getString("myFriends", null);
@@ -356,6 +442,17 @@ public class HomeActivity extends AppCompatActivity
 //        bp.setArguments(arg);
 //        loadFragmentHelper(bp);
     }
+
+    @Override
+    public void onPendingListFragmentInteraction(ContactDetail item) {
+
+    }
+
+    @Override
+    public void onAcceptedListFragmentInteraction(ContactDetail item) {
+
+    }
+
     // Deleting the Pushy device token must be done asynchronously. Good thing
     // we have something that allows us to do that.
     class DeleteTokenAsyncTask extends AsyncTask<Void, Void, Void> {

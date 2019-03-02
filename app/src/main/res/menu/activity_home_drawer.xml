@@ -25,9 +25,9 @@
                 android:title="Connections" />
 
             <item
-                android:id="@+id/nav_search_connections"
+                android:id="@+id/nav_contacts"
                 android:icon="@drawable/ic_search_black"
-                android:title="Search Connections" />
+                android:title="Contacts" />
 
         </menu>
     </item>

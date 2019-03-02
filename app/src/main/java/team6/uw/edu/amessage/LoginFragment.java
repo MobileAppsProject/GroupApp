@@ -34,6 +34,7 @@ public class LoginFragment extends Fragment {
     private static final String TAG = "LoginFrag";
     private Credentials mCredentials;
     private String mJwt;
+    private String mMemberID;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -234,11 +235,12 @@ public class LoginFragment extends Fragment {
             boolean success =
                     resultsJSON.getBoolean(
                             getString(R.string.keys_json_login_success));
-            Log.d("LOGINNOT", "handleLoginOnPost: " + success);
+            Log.d("handleLoginOnPost", "handleLoginOnPost: " + success);
             if (success) {
                 //Login was successful. Switch to the loadSuccessFragment.
                 mJwt = resultsJSON.getString(
                         getString(R.string.keys_json_login_jwt));
+                mMemberID = resultsJSON.getString("memberid");
                 new RegisterForPushNotificationsAsync().execute();
 //                saveCredentials(mCredentials);
 //                mListener.onLoginSuccess(mCredentials, mJwt);
@@ -274,7 +276,7 @@ public class LoginFragment extends Fragment {
 
             if (success) {
                 saveCredentials(mCredentials);
-                mListener.onLoginSuccess(mCredentials, mJwt);
+                mListener.onLoginSuccess(mCredentials, mJwt, mMemberID);
                 return;
             } else {
                 //Saving the token wrong. Don’t switch fragments and inform the user
@@ -306,7 +308,7 @@ public class LoginFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnLoginFragmentInteractionListener extends WaitFragment.OnFragmentInteractionListener {
-        void onLoginSuccess(Credentials theUser, String jwt);
+        void onLoginSuccess(Credentials theUser, String jwt, String memberid);
         void onRegisterClick();
         void onWaitFragmentInteractionShow();
         void onWaitFragmentInteractionHide();

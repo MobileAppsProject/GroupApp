@@ -7,21 +7,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import team6.uw.edu.amessage.ChatFragment.OnListFragmentInteractionListener;
-import team6.uw.edu.amessage.chat.ChatMessage;
+import team6.uw.edu.amessage.ConnectionsFragment.OnListFragmentInteractionListener;
+import team6.uw.edu.amessage.contact.ContactDetail;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link ChatMessage} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link ContactDetail} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  */
-public class MyChatRecyclerViewAdapter extends RecyclerView.Adapter<MyChatRecyclerViewAdapter.ViewHolder> {
+public class MyConnectionsRecyclerViewAdapter extends RecyclerView.Adapter<MyConnectionsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<ChatMessage> mValues;
+    private final List<ContactDetail> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyChatRecyclerViewAdapter(List<ChatMessage> blogs, OnListFragmentInteractionListener listener) {
+    public MyConnectionsRecyclerViewAdapter(List<ContactDetail> blogs, OnListFragmentInteractionListener listener) {
         mValues = blogs;
         mListener = listener;
     }
@@ -29,16 +29,15 @@ public class MyChatRecyclerViewAdapter extends RecyclerView.Adapter<MyChatRecycl
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_chat, parent, false);
+                .inflate(R.layout.fragment_connections, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText("Chat " + mValues.get(position).getChatId());
-//        holder.mContentView.setText(mValues.get(position).getPubDate());
-        holder.mSamplingView.setText(Html.fromHtml(mValues.get(position).getTeaser()));
+        holder.mIdView.setText(mValues.get(position).getEmail());
+        holder.mSamplingView.setText(Html.fromHtml(mValues.get(position).getFirstName()));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +45,7 @@ public class MyChatRecyclerViewAdapter extends RecyclerView.Adapter<MyChatRecycl
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onConnectionsListFragmentInteraction(holder.mItem);
                 }
             }
         });
@@ -61,13 +60,13 @@ public class MyChatRecyclerViewAdapter extends RecyclerView.Adapter<MyChatRecycl
         public final View mView;
         public final TextView mIdView;
         public final TextView mSamplingView;
-        public ChatMessage mItem;
+        public ContactDetail mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.fragBlog_blogTitle_textView);
-            mSamplingView = (TextView) view.findViewById(R.id.fragBlog_sampling_textView);
+            mIdView = (TextView) view.findViewById(R.id.fragContact_Title_textView);
+            mSamplingView = (TextView) view.findViewById(R.id.fragContact_sampling_textView);
         }
 
         @Override

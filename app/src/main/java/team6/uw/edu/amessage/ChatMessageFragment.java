@@ -60,7 +60,7 @@ public class ChatMessageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootLayout = inflater.inflate(R.layout.fragment_lab_chat, container, false);
+        View rootLayout = inflater.inflate(R.layout.fragment_chat_message, container, false);
 
 //        savedInstanceState = getArguments();
 //
