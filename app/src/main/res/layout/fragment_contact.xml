@@ -27,7 +27,7 @@
                 android:textAppearance="?attr/textAppearanceListItem" />
 
             <!--<TextView-->
-            <!--android:id="@+id/fragBlog_publishDate_textView"-->
+            <!--android:mChatId="@+mChatId/fragBlog_publishDate_textView"-->
             <!--android:layout_width="0dp"-->
             <!--android:layout_weight="1"-->
             <!--android:layout_height="wrap_content"-->

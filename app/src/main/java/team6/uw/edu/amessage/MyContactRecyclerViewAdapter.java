@@ -68,7 +68,7 @@ public class MyContactRecyclerViewAdapter extends RecyclerView.Adapter<MyContact
             super(view);
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.fragContact_Title_textView);
-            mContentView = (TextView) view.findViewById(R.id.fragBlog_publishDate_textView);
+            mContentView = (TextView) view.findViewById(R.id.fragChatMsg_chatbox_editText);
             mSamplingView = (TextView) view.findViewById(R.id.fragContact_sampling_textView);
         }
 

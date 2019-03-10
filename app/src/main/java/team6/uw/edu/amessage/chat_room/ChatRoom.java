@@ -1,4 +1,4 @@
-package team6.uw.edu.amessage.chat;
+package team6.uw.edu.amessage.chat_room;
 
 import java.io.Serializable;
 
@@ -11,9 +11,9 @@ import java.io.Serializable;
  * @author Charles Bryan
  * @version 14 September 2018
  */
-public class ChatMessage implements Serializable {
+public class ChatRoom implements Serializable {
     //
-    private final String mPubDate;
+    private final String mChatName;
     private final int mChatId;
     private final String mUrl;
     private final String mTeaser;
@@ -25,7 +25,7 @@ public class ChatMessage implements Serializable {
      * @author Charles Bryan
      */
     public static class Builder {
-        private final String mPubDate;
+        private final String mChatName;
         private final int mChatId;
         private String mUrl = "";
         private String mTeaser = "";
@@ -38,15 +38,15 @@ public class ChatMessage implements Serializable {
          * @param pubDate the published date of the blog post
          * @param title the title of the blog post
          */
-        public Builder(String pubDate, int title) {
-            this.mPubDate = pubDate;
-            this.mChatId = title;
+        public Builder(int chatId, String chatName) {
+            this.mChatId = chatId;
+            this.mChatName = chatName;
         }
 
         /**
          * Add an optional url for the full blog post.
          * @param val an optional url for the full blog post
-         * @return the Builder of this ChatMessage
+         * @return the Builder of this ChatRoom
          */
         public Builder addUrl(final String val) {
             mUrl = val;
@@ -56,7 +56,7 @@ public class ChatMessage implements Serializable {
         /**
          * Add an optional teaser for the full blog post.
          * @param val an optional url teaser for the full blog post.
-         * @return the Builder of this ChatMessage
+         * @return the Builder of this ChatRoom
          */
         public Builder addTeaser(final String val) {
             mTeaser = val;
@@ -66,29 +66,29 @@ public class ChatMessage implements Serializable {
         /**
          * Add an optional author of the blog post.
          * @param val an optional author of the blog post.
-         * @return the Builder of this ChatMessage
+         * @return the Builder of this ChatRoom
          */
         public Builder addAuthor(final String val) {
             mAuthor = val;
             return this;
         }
 
-        public ChatMessage build() {
-            return new ChatMessage(this);
+        public ChatRoom build() {
+            return new ChatRoom(this);
         }
 
     }
 
-    private ChatMessage(final Builder builder) {
-        this.mPubDate = builder.mPubDate;
+    private ChatRoom(final Builder builder) {
+        this.mChatName = builder.mChatName;
         this.mChatId = builder.mChatId;
         this.mUrl = builder.mUrl;
         this.mTeaser = builder.mTeaser;
         this.mAuthor = builder.mAuthor;
     }
 
-    public String getPubDate() {
-        return mPubDate;
+    public String getChatName() {
+        return mChatName;
     }
 
     public int getChatId() {

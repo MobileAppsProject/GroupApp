@@ -12,6 +12,7 @@
     <string name="keys_json_login_success">success</string>
     <string name="keys_json_register_success">success</string>
     <string name="keys_json_login_jwt">token</string>
+    <string name="keys_json_login_userid">memberid</string>
 
     <string name="keys_json_blogs_response">response</string>
     <string name="keys_json_blogs_data">data</string>

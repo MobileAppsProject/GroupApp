@@ -1,4 +1,4 @@
-package team6.uw.edu.amessage;
+package team6.uw.edu.amessage.utils;
 
 import android.os.AsyncTask;
 

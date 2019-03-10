@@ -12,18 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import team6.uw.edu.amessage.chat.ChatMessage;
 import team6.uw.edu.amessage.utils.PushReceiver;
 import team6.uw.edu.amessage.utils.SendPostAsyncTask;
 
@@ -56,9 +50,9 @@ public class LabChatFragment extends Fragment {
 
         View rootLayout = inflater.inflate(R.layout.fragment_lab_chat, container, false);
 
-        mMessageOutputTextView = rootLayout.findViewById(R.id.fragChat_messageDisplay_textView);
-        mMessageInputEditText = rootLayout.findViewById(R.id.fragChat_messageInput_editText);
-        rootLayout.findViewById(R.id.fragChat_messageSend_imageView).setOnClickListener(this::handleSendClick);
+//        mMessageOutputTextView = rootLayout.findViewById(R.id.fragChat_messageDisplay_textView);
+//        mMessageInputEditText = rootLayout.findViewById(R.id.fragChat_messageInput_editText);
+//        rootLayout.findViewById(R.id.fragChat_messageSend_imageView).setOnClickListener(this::handleSendClick);
 
         return rootLayout;
     }
@@ -140,7 +134,7 @@ public class LabChatFragment extends Fragment {
     }
 
     /**
-     * A BroadcastReceiver that listens for messages sent from PushReceiver
+     * A BroadcastReceiver that listens for Messages sent from PushReceiver
      */
     private class PushMessageReceiver extends BroadcastReceiver {
 
@@ -171,13 +165,13 @@ public class LabChatFragment extends Fragment {
 //                    JSONArray data = response.getJSONArray(
 //                            getString(R.string.keys_json_blogs_data));
 //
-////                    List<ChatMessage> blogs = new ArrayList<>();
+////                    List<ChatRoom> blogs = new ArrayList<>();
 //
 //                    for(int i = 0; i < data.length(); i++) {
 //                        JSONObject jsonBlog = data.getJSONObject(i);
 ////                        Log.wtf()
 //
-////                        blogs.add(new ChatMessage.Builder(
+////                        blogs.add(new ChatRoom.Builder(
 ////                                jsonBlog.getString(
 ////                                        getString(R.string.keys_json_blogs_pubdate)),
 ////                                jsonBlog.getString(
@@ -189,12 +183,12 @@ public class LabChatFragment extends Fragment {
 ////                                .build());
 //                    }
 //
-//                    ChatMessage[] blogAsArray = new ChatMessage[blogs.size()];
+//                    ChatRoom[] blogAsArray = new ChatRoom[blogs.size()];
 //                    blogAsArray = blogs.toArray(blogAsArray);
 //
 //                    Bundle args = new Bundle();
-//                    args.putSerializable(ChatFragment.ARG_BLOG_LIST, blogAsArray);
-//                    Fragment frag = new ChatFragment();
+//                    args.putSerializable(ChatRoomFragment.ARG_BLOG_LIST, blogAsArray);
+//                    Fragment frag = new ChatRoomFragment();
 //                    frag.setArguments(args);
 //
 ////                    onWaitFragmentInteractionHide();

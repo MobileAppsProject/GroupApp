@@ -1,4 +1,4 @@
-package team6.uw.edu.amessage;
+package team6.uw.edu.amessage.chat_message_list_recycler_view;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import team6.uw.edu.amessage.chat.ChatGenerator;
-import team6.uw.edu.amessage.chat.ChatMessage;
+import team6.uw.edu.amessage.R;
 
 /**
  * A fragment representing a list of Items.
@@ -23,11 +23,13 @@ import team6.uw.edu.amessage.chat.ChatMessage;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class ChatFragment extends Fragment {
+public class chatMessageListFragment extends Fragment {
 
-    public static final String ARG_BLOG_LIST = "blogs lists";
-    private List<ChatMessage> mChat;
+    public static final String ARG_MESSAGES_LIST = "messagesLists";
+    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
+    private List<Messages> mMessagesList;
+    // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
@@ -35,12 +37,13 @@ public class ChatFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ChatFragment() {
+    public chatMessageListFragment() {
     }
 
+    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static ChatFragment newInstance(int columnCount) {
-        ChatFragment fragment = new ChatFragment();
+    public static chatMessageListFragment newInstance(int columnCount) {
+        chatMessageListFragment fragment = new chatMessageListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -50,20 +53,20 @@ public class ChatFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d("recView", "Before if!");
         if (getArguments() != null) {
-            mChat = new ArrayList<ChatMessage>(
-                    Arrays.asList((ChatMessage[]) getArguments().getSerializable(ARG_BLOG_LIST)));
+            mMessagesList = new ArrayList<Messages>(
+                    Arrays.asList((Messages[]) getArguments().getSerializable(ARG_MESSAGES_LIST)));
         } else {
-            mChat = ChatGenerator.CHAT_MESSAGES;
+            Log.d("recView", "theMessage list default");
+            mMessagesList = MessagesGenerator.CHAT_MESSAGES;
         }
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_chat_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_chatmessagelist_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -74,11 +77,11 @@ public class ChatFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyChatRecyclerViewAdapter(mChat, mListener));
-//            recyclerView.setAdapter(new MyChatRecyclerViewAdapter(ChatGenerator.POSTS, mListener));
+            recyclerView.setAdapter(new chatMessageListRecyclerViewAdapter(mMessagesList));
         }
         return view;
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -108,6 +111,7 @@ public class ChatFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(ChatMessage item);
+        // TODO: Update argument type and name
+        void onListFragmentInteraction(Messages item);
     }
 }

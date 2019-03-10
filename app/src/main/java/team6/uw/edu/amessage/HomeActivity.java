@@ -26,17 +26,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.pushy.sdk.Pushy;
-import team6.uw.edu.amessage.chat.ChatMessage;
-import team6.uw.edu.amessage.model.Credentials;
+import team6.uw.edu.amessage.add_chat.AddChatFragment;
+import team6.uw.edu.amessage.chat_message_list_recycler_view.Messages;
+import team6.uw.edu.amessage.chat_message_list_recycler_view.chatMessageListFragment;
+import team6.uw.edu.amessage.chat_room.ChatRoom;
+import team6.uw.edu.amessage.chat_room.ChatRoomFragment;
+import team6.uw.edu.amessage.chat_room.ChatMessageFragment;
 import team6.uw.edu.amessage.contact.ContactDetail;
+import team6.uw.edu.amessage.model.Credentials;
+import team6.uw.edu.amessage.utils.GetAsyncTask;
+import team6.uw.edu.amessage.utils.SendPostAsyncTask;
 
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-                    ChatFragment.OnListFragmentInteractionListener,
+                    ChatRoomFragment.OnListFragmentInteractionListener,
                     ChatMessageFragment.OnFragmentInteractionListener,
                     WaitFragment.OnFragmentInteractionListener,
-                    ContactFragment.OnListFragmentInteractionListener {
+                    ContactFragment.OnListFragmentInteractionListener,
+                    chatMessageListFragment.OnListFragmentInteractionListener,
+                    AddChatFragment.OnListFragmentInteractionListener
+                    {
 
     private Credentials myCredentials;
     private String mJwToken;
@@ -133,7 +143,27 @@ public class HomeActivity extends AppCompatActivity
             loadFragmentHelper(new WeatherFragment());
         } else if (id == R.id.nav_my_chats) {
             setTitle("Chats");
-            loadFragmentHelper(new ChatFragment());
+            //This will get the information allowing for chat rooms to be made dynamically.
+            String uri = new Uri.Builder()
+                    .scheme("https")
+                    .appendPath(getString(R.string.ep_base_url))
+                    .appendPath("chats")
+                    .appendPath("getChats")
+                    .build().toString();
+            JSONObject messageJson = new JSONObject();
+            //Send in the user ID
+            try {
+                messageJson.put("memberid", LoginFragment.mUserId);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            new SendPostAsyncTask.Builder(uri, messageJson)
+                    .onPreExecute(this::onWaitFragmentInteractionShow)
+                    .onPostExecute(this::handleChatRoomSendOnPostExecute)
+                    .onCancelled(error -> Log.e("WRONG", error))
+                    .addHeaderField("authorization", mJwToken)
+                    .build().execute();
         } else if (id == R.id.nav_connections) {
             setTitle("Connections");
 //            loadFragmentHelper(new ContactFragment());
@@ -209,28 +239,28 @@ public class HomeActivity extends AppCompatActivity
 
     //This will get the parse the jason object.
     private void handleBlogGetOnPostExecute(final String result) {
-        Log.d("Armoni", "IN Method");
+//        Log.d("Armoni", "IN Method");
         try {
             //This is the result from the web service
             JSONObject root = new JSONObject(result);
             if(root.has("members")) {
-                Log.d("Armoni", "IN IF, " + root.toString());
+//                Log.d("Armoni", "IN IF, " + root.toString());
                 JSONArray arr = root.getJSONArray ("members");
-                List<ContactDetail> contacts = new ArrayList<>();
+                List<team6.uw.edu.amessage.contact.ContactDetail> contacts = new ArrayList<>();
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = new JSONObject(arr.get(i).toString());
                     String firstname = obj.getString("firstname");
                     String lastname = obj.getString("lastname");
                     String username = obj.getString("username");
                     String memberid = obj.getString("memberid");
-                    contacts.add(new ContactDetail.Builder(firstname, lastname)
+                    contacts.add(new team6.uw.edu.amessage.contact.ContactDetail.Builder(firstname, lastname)
                                     .addEmail(username)
                                     .addUserId(memberid)
                                     .build());
                     Log.d("Armoni", "f: " + firstname + ", " + lastname + ", " + username);
 
                     }
-                ContactDetail[] contactsAsArray = new ContactDetail[contacts.size()];
+                team6.uw.edu.amessage.contact.ContactDetail[] contactsAsArray = new team6.uw.edu.amessage.contact.ContactDetail[contacts.size()];
                 contactsAsArray = contacts.toArray(contactsAsArray);
 
                 Bundle args = new Bundle();
@@ -240,7 +270,6 @@ public class HomeActivity extends AppCompatActivity
 
                 onWaitFragmentInteractionHide();
                 loadFragmentHelper(frag);
-//
 
             } else {
                 Log.e("ERROR!", "No response");
@@ -254,65 +283,63 @@ public class HomeActivity extends AppCompatActivity
             //notify user
             onWaitFragmentInteractionHide();
         }
+        }
 
-//        try {
-//            JSONObject root = new JSONObject(result);
-//            if (root.has(getString(R.string.keys_json_blogs_response))) {
-//                JSONObject response = root.getJSONObject(
-//                        getString(R.string.keys_json_blogs_response));
-//                if (response.has(getString(R.string.keys_json_blogs_data))) {
-//                    JSONArray data = response.getJSONArray(
-//                            getString(R.string.keys_json_blogs_data));
+    //This will get the parse the jason object.
+    private void handleChatRoomSendOnPostExecute(final String result) {
+        Log.d("ChatRoomTest", "In the Start of Method");
+        try {
+            //This is the result from the web service
+            JSONObject root = new JSONObject(result);
+            if(root.has("result")) {
+//                Log.d("ChatRoomTest", "IN IF, " + root.toString());
+                JSONArray arr = root.getJSONArray ("result");
+                List<ChatRoom> theChatRooms = new ArrayList<>();
+                for (int i = 0; i < arr.length(); i++) {
+                    JSONObject obj = new JSONObject(arr.get(i).toString());
+                    String chatId = obj.getString("chatid");
+                    String chatName = obj.getString("chatname");
+                    Log.d("ChatRoomTest", "ChatId: , " + chatId);
+                    JSONArray members = obj.getJSONArray("members");
+                    for(int j = 0; j < members.length(); j++) {
+                        JSONObject mem = new JSONObject(members.get(j).toString());
+                        String username = mem.getString("username");
+                        Log.d("ChatRoomTest", "USERNAME: , " + username);
+                    }
 //
-//                    List<ChatMessage> blogs = new ArrayList<>();
-//
-//                    for(int i = 0; i < data.length(); i++) {
-//                        JSONObject jsonBlog = data.getJSONObject(i);
+                    theChatRooms.add(new ChatRoom.Builder(Integer.parseInt(chatId), chatName)
+                            .build());
 
-//                        blogs.add(new ChatMessage.Builder(
-//                                jsonBlog.getString(
-//                                        getString(R.string.keys_json_blogs_pubdate)),
-//                                jsonBlog.getString(
-//                                        getString(R.string.keys_json_blogs_title)))
-//                                .addTeaser(jsonBlog.getString(
-//                                        getString(R.string.keys_json_blogs_teaser)))
-//                                .addEmail(jsonBlog.getString(
-//                                        getString(R.string.keys_json_blogs_url)))
-//                                .build());
-//                    }
+                }
+                ChatRoom[] chatRoomsAsArray = new ChatRoom[theChatRooms.size()];
+                chatRoomsAsArray = theChatRooms.toArray(chatRoomsAsArray);
 
-//                    ChatMessage[] blogAsArray = new ChatMessage[blogs.size()];
-//                    blogAsArray = blogs.toArray(blogAsArray);
-//
-//                    Bundle args = new Bundle();
-//                    args.putSerializable(ChatFragment.ARG_BLOG_LIST, blogAsArray);
-//                    Fragment frag = new ChatFragment();
-//                    frag.setArguments(args);
-//
-//                    onWaitFragmentInteractionHide();
-//                    loadFragmentHelper(frag);
-//
-//                } else {
-//                    Log.e("ERROR!", "No data array");
-//                    //notify user
-//                    onWaitFragmentInteractionHide();
-//                }
-//            } else {
-//                Log.e("ERROR!", "No response");
-//                //notify user
-//                onWaitFragmentInteractionHide();
-//            }
+                Bundle args = new Bundle();
+                args.putSerializable(ChatRoomFragment.ARG_BLOG_LIST, chatRoomsAsArray);
+                Fragment frag = new ChatRoomFragment();
+                frag.setArguments(args);
 
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//            Log.e("ERROR!", e.getMessage());
-//            //notify user
-//            onWaitFragmentInteractionHide();
-//        }
+                onWaitFragmentInteractionHide();
+                loadFragmentHelper(frag);
+//
+
+            } else {
+                Log.e("ERROR!", "No response");
+                loadFragmentHelper(new ChatRoomFragment());
+                //notify user
+                onWaitFragmentInteractionHide();
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("ERROR!", e.getMessage());
+            //notify user
+            onWaitFragmentInteractionHide();
+        }
     }
 
     @Override
-    public void onListFragmentInteraction(ChatMessage item) {
+    public void onListFragmentInteraction(ChatRoom item) {
         Log.w("NotWork", "Chat Item: " + item.getChatId());
         Fragment chat = new ChatMessageFragment();
             Bundle args = new Bundle();
@@ -324,7 +351,7 @@ public class HomeActivity extends AppCompatActivity
     }
                             
     @Override
-    public void onContactListFragmentInteraction(ContactDetail item) {
+    public void onContactListFragmentInteraction(team6.uw.edu.amessage.contact.ContactDetail item) {
 //        myFlag = false;
         Toast.makeText(this,
                 "Added " + item.getEmail() + " To Friends List!", Toast.LENGTH_SHORT).show();
@@ -356,6 +383,22 @@ public class HomeActivity extends AppCompatActivity
 //        bp.setArguments(arg);
 //        loadFragmentHelper(bp);
     }
+
+    @Override
+    public void onListFragmentInteraction(Messages item) {
+
+    }
+
+    @Override
+    public void onListFragmentInteraction(ContactDetail item) {
+
+    }
+
+//    @Override
+//    public void onListFragmentInteraction(DummyContent.ContactDetail item) {
+//
+//    }
+
     // Deleting the Pushy device token must be done asynchronously. Good thing
     // we have something that allows us to do that.
     class DeleteTokenAsyncTask extends AsyncTask<Void, Void, Void> {

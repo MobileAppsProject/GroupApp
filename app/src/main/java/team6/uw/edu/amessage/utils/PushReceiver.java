@@ -30,8 +30,8 @@ public class PushReceiver extends BroadcastReceiver {
         //In the WS, you define what gets sent. You can change it there to suit your needs
         //Then here on the Android side, decide what to do with the message you got
 
-        //for the lab, the WS is only sending chat messages so the type will always be msg
-        //for your project, the WS need to send different types of push messages.
+        //for the lab, the WS is only sending chat Messages so the type will always be msg
+        //for your project, the WS need to send different types of push Messages.
         //perform so logic/routing based on the "type"
         //feel free to change the key or type of values. You could use numbers like HTTP: 404 etc
         String typeOfMessage = intent.getStringExtra("type");

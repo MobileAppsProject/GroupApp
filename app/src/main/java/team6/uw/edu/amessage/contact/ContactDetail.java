@@ -18,6 +18,7 @@ public class ContactDetail implements Serializable {
     private final String mEmail;
     private final String mUserId;
     private final String mAuthor;
+    private boolean isSelected = false;
 
     /**
      * Helper class for building Credentials.
@@ -105,6 +106,14 @@ public class ContactDetail implements Serializable {
 
     public String getAuthor() {
         return mAuthor;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
     }
 
 

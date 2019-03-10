@@ -76,7 +76,7 @@ public class ContactFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             recyclerView.setAdapter(new MyContactRecyclerViewAdapter(mBlog, mListener));
-//            recyclerView.setAdapter(new MyChatRecyclerViewAdapter(ChatGenerator.POSTS, mListener));
+//            recyclerView.setAdapter(new MyChatRoomRecyclerViewAdapter(ChatRoomGenerator.POSTS, mListener));
         }
         return view;
     }

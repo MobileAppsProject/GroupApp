@@ -1,4 +1,4 @@
-package team6.uw.edu.amessage;
+package team6.uw.edu.amessage.chat_room;
 
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -7,38 +7,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import team6.uw.edu.amessage.ChatFragment.OnListFragmentInteractionListener;
-import team6.uw.edu.amessage.chat.ChatMessage;
+import team6.uw.edu.amessage.R;
+import team6.uw.edu.amessage.chat_room.ChatRoomFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link ChatMessage} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link ChatRoom} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  */
-public class MyChatRecyclerViewAdapter extends RecyclerView.Adapter<MyChatRecyclerViewAdapter.ViewHolder> {
+public class MyChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<MyChatRoomRecyclerViewAdapter.ViewHolder> {
 
-    private final List<ChatMessage> mValues;
+    private final List<ChatRoom> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyChatRecyclerViewAdapter(List<ChatMessage> blogs, OnListFragmentInteractionListener listener) {
-        mValues = blogs;
+    public MyChatRoomRecyclerViewAdapter(List<ChatRoom> chatRooms, OnListFragmentInteractionListener listener) {
+        mValues = chatRooms;
         mListener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_chat, parent, false);
+                .inflate(R.layout.fragment_chat_room, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText("Chat " + mValues.get(position).getChatId());
+        holder.mIdView.setText("Members: " + mValues.get(position).getChatName());
 //        holder.mContentView.setText(mValues.get(position).getPubDate());
-        holder.mSamplingView.setText(Html.fromHtml(mValues.get(position).getTeaser()));
+        holder.mUsersView.setText(Html.fromHtml(mValues.get(position).getTeaser()));
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,15 +61,15 @@ public class MyChatRecyclerViewAdapter extends RecyclerView.Adapter<MyChatRecycl
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
-        public final TextView mSamplingView;
-        public ChatMessage mItem;
+        public final TextView mUsersView;
+        public ChatRoom mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.fragBlog_blogTitle_textView);
-            mContentView = (TextView) view.findViewById(R.id.fragBlog_publishDate_textView);
-            mSamplingView = (TextView) view.findViewById(R.id.fragBlog_sampling_textView);
+            mContentView = (TextView) view.findViewById(R.id.fragChatMsg_chatbox_editText);
+            mUsersView = (TextView) view.findViewById(R.id.fragChatRoom_users_textView);
         }
 
         @Override

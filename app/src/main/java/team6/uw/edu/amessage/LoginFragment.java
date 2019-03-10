@@ -34,6 +34,7 @@ public class LoginFragment extends Fragment {
     private static final String TAG = "LoginFrag";
     private Credentials mCredentials;
     private String mJwt;
+    public static String mUserId;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -49,20 +50,6 @@ public class LoginFragment extends Fragment {
 
         // Inflate the layout for this fragment.
         View v = inflater.inflate(R.layout.fragment_login, container, false);
-
-//        ConstraintLayout screen = (ConstraintLayout) v.findViewById(R.id.fragLogin_screen_constraintLayout);
-//        ObjectAnimator colorFade = ObjectAnimator.ofObject(screen, "backgroundColor", new ArgbEvaluator(), Color.argb(255,1,1,1), Color.WHITE);
-//        colorFade.setDuration(1000);
-//        colorFade.start();
-
-//        ObjectAnimator colorFade = ObjectAnimator.ofObject(v, "backgroundColor" /*view attribute name*/, new ArgbEvaluator(), v.getResources().getColor(Color.BLUE) /*from color*/, Color.WHITE /*to color*/);
-//        colorFade.setDuration(3500);
-//        colorFade.setStartDelay(200);
-//        colorFade.start();
-
-//        for (int i = 0; i < 65535; i+=0.01) {
-//            screen.setBackgroundColor(0xff000000 + i);
-//        }
 
         Button b = (Button) v.findViewById(R.id.fragLogin_register_button);
         //Use a method reference to add the OnClickListener
@@ -234,14 +221,17 @@ public class LoginFragment extends Fragment {
             boolean success =
                     resultsJSON.getBoolean(
                             getString(R.string.keys_json_login_success));
-            Log.d("LOGINNOT", "handleLoginOnPost: " + success);
+//            Log.d("UserId", "handleLoginOnPost: " + resultsJSON);
             if (success) {
                 //Login was successful. Switch to the loadSuccessFragment.
                 mJwt = resultsJSON.getString(
-                        getString(R.string.keys_json_login_jwt));
+                            getString(R.string.keys_json_login_jwt));
+
+                mUserId = resultsJSON.getString(
+                            getString(R.string.keys_json_login_userid));
+
+                Log.d("UserID", "My UserId: " + mUserId);
                 new RegisterForPushNotificationsAsync().execute();
-//                saveCredentials(mCredentials);
-//                mListener.onLoginSuccess(mCredentials, mJwt);
 
                 return;
             } else {
