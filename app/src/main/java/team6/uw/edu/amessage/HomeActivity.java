@@ -37,9 +37,9 @@ public class HomeActivity extends AppCompatActivity
                     ChatFragment.OnListFragmentInteractionListener,
                     ChatMessageFragment.OnFragmentInteractionListener,
                     WaitFragment.OnFragmentInteractionListener,
-                    ConnectionsFragment.OnListFragmentInteractionListener,
+                    ConnectionsFragment.OnAcceptedListFragmentInteractionListener,
                     ContactsFragment.OnPendingListFragmentInteractionListener,
-        ContactsFragment.OnAcceptedListFragmentInteractionListener{
+        ContactsFragment.OnSentListFragmentInteractionListener{
 
     private Credentials myCredentials;
     private String mJwToken;
@@ -144,18 +144,29 @@ public class HomeActivity extends AppCompatActivity
             loadFragmentHelper(new ChatFragment());
         } else if (id == R.id.nav_connections) {
             setTitle("Connections");
-            Uri uri = new Uri.Builder()
+            String uri = new Uri.Builder()
                     .scheme("https")
                     .appendPath(getString(R.string.ep_base_url))
-                    .appendPath("members")
-                    .build();
-            new GetAsyncTask.Builder(uri.toString())
+                    .appendPath("contacts")
+                    .appendPath("myContacts")
+                    .build().toString();
+            JSONObject messageJson = new JSONObject();
+            try {
+                messageJson.put("memberid", mMemberID);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            new SendPostAsyncTask.Builder(uri, messageJson )
                     .onPreExecute(this::onWaitFragmentInteractionShow)
                     .onPostExecute(this::handleConnectionsGetOnPostExecute)
+                    .onCancelled(error -> Log.e("HomeActivity", error))
                     .addHeaderField("authorization", mJwToken) //add the JWT as a header
                     .build().execute();
+
+
         } else if (id == R.id.nav_contacts) {
-            setTitle("Contacts");
+            setTitle("Requests");
 
             mContactArgs = new Bundle();
 
@@ -167,13 +178,14 @@ public class HomeActivity extends AppCompatActivity
                     .appendPath("pending")
                     .build().toString();
 
-            JSONObject messageJson = new JSONObject();
+            JSONObject msg = new JSONObject();
             try {
-                messageJson.put("memberid", mMemberID);
+                msg.put("memberid", mMemberID);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            new SendPostAsyncTask.Builder(uri, messageJson)
+
+            new SendPostAsyncTask.Builder(uri, msg)
                     .onPreExecute(this::onWaitFragmentInteractionShow)
                     .onPostExecute(this::handleContactPendingOnPostExecute)
                     .onCancelled(error -> Log.e("HomeActivity", error))
@@ -218,8 +230,6 @@ public class HomeActivity extends AppCompatActivity
     //This will load the wait fragment.
     @Override
     public void onWaitFragmentInteractionShow() {
-        Log.d("HomeActivity", "hey");
-
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragmentContainer, new WaitFragment(), "WAIT")
@@ -239,12 +249,12 @@ public class HomeActivity extends AppCompatActivity
     }
 
     // Handles the results of getting all accepted contacts
-    private void handleContactAcceptedOnPostExecute(final String result) {
+    private void handleContactSentOnPostExecute(final String result) {
         try {
             //This is the result from the web service
             JSONObject root = new JSONObject(result);
             if(root.getBoolean("success") == true) {
-                JSONArray arr = root.getJSONArray ("myContacts");
+                JSONArray arr = root.getJSONArray ("sentlist");
                 List<ContactDetail> contacts = new ArrayList<>();
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = new JSONObject(arr.get(i).toString());
@@ -264,7 +274,9 @@ public class HomeActivity extends AppCompatActivity
                 ContactDetail[] ContactsAsArray = new ContactDetail[contacts.size()];
                 ContactsAsArray = contacts.toArray(ContactsAsArray);
 
-                mContactArgs.putSerializable("acceptedcontacts", ContactsAsArray);
+                mContactArgs.putSerializable("sentcontacts", ContactsAsArray);
+                mContactArgs.putSerializable("jwtoken", mJwToken);
+                mContactArgs.putSerializable("memberid", mMemberID);
 
 
                 Fragment frag = new ContactsFragment();
@@ -289,6 +301,7 @@ public class HomeActivity extends AppCompatActivity
 
     private void handleContactPendingOnPostExecute(final String result) {
         try {
+
             //This is the result from the web service
             JSONObject root = new JSONObject(result);
             if(root.getBoolean("success") == true) {
@@ -319,7 +332,7 @@ public class HomeActivity extends AppCompatActivity
                         .scheme("https")
                         .appendPath(getString(R.string.ep_base_url))
                         .appendPath("contacts")
-                        .appendPath("myContacts")
+                        .appendPath("sent")
                         .build().toString();
 
                 JSONObject messageJson = new JSONObject();
@@ -329,8 +342,7 @@ public class HomeActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
                 new SendPostAsyncTask.Builder(uri, messageJson)
-                        .onPreExecute(this::onWaitFragmentInteractionShow)
-                        .onPostExecute(this::handleContactAcceptedOnPostExecute)
+                        .onPostExecute(this::handleContactSentOnPostExecute)
                         .onCancelled(error -> Log.e("HomeActivity", error))
                         .addHeaderField("authorization", mJwToken) //add the JWT as a header
                         .build().execute();
@@ -356,32 +368,37 @@ public class HomeActivity extends AppCompatActivity
         try {
             //This is the result from the web service
             JSONObject root = new JSONObject(result);
-            if(root.has("members")) {
-                JSONArray arr = root.getJSONArray ("members");
+            if(root.getBoolean("success") == true) {
+                JSONArray arr = root.getJSONArray ("myContacts");
                 List<ContactDetail> contacts = new ArrayList<>();
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = new JSONObject(arr.get(i).toString());
                     String firstname = obj.getString("firstname");
                     String lastname = obj.getString("lastname");
                     String username = obj.getString("username");
-                    String email = obj.getString("email");
                     String memberid = obj.getString("memberid");
+                    String email = obj.getString("email");
                     contacts.add(new ContactDetail.Builder(firstname, lastname)
-                                    .addEmail(email)
-                                    .addAuthor(username)
-                                    .addUserId(memberid)
-                                    .build());
-                    }
-                ContactDetail[] contactsAsArray = new ContactDetail[contacts.size()];
-                contactsAsArray = contacts.toArray(contactsAsArray);
+                            .addAuthor(username)
+                            .addEmail(email)
+                            .addUserId(memberid)
+                            .build());
+
+                }
+                ContactDetail[] ContactsAsArray = new ContactDetail[contacts.size()];
+                ContactsAsArray = contacts.toArray(ContactsAsArray);
 
                 Bundle args = new Bundle();
-                args.putSerializable(ConnectionsFragment.ARG_BLOG_LIST, contactsAsArray);
+                args.putSerializable("acceptedcontacts", ContactsAsArray);
+                args.putSerializable("jwtoken", mJwToken);
+                args.putSerializable("memberid", mMemberID);
+
+
                 Fragment frag = new ConnectionsFragment();
                 frag.setArguments(args);
+                loadFragmentHelper(frag);
 
                 onWaitFragmentInteractionHide();
-                loadFragmentHelper(frag);
 
             } else {
                 Log.e("ERROR!", "No response");
@@ -408,40 +425,7 @@ public class HomeActivity extends AppCompatActivity
             chat.setArguments(args);
             loadFragmentHelper(chat);
     }
-                            
-    @Override
-    public void onConnectionsListFragmentInteraction(ContactDetail item) {
-//        myFlag = false;
-        Toast.makeText(this,
-                "Sent " + item.getEmail() + " a friend request!", Toast.LENGTH_LONG).show();
-//        if (myFlag) {/
-            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-            String defaultValue = sharedPref.getString("myFriends", null);
-            if (defaultValue == null) {
-                defaultValue = "";
-            } else
-            if (!defaultValue.contains(item.getEmail())) {
-                defaultValue += "\n";
-                defaultValue += item.getEmail();
-            }
 
-            Log.d("Armoni", "This is value: " + defaultValue);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("myFriends", defaultValue);
-            editor.commit();
-//            editor.putString("myFriends", "");
-//            editor.commit();
-
-//        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = sharedPref.edit();
-//        editor.putString("myFriends", ""+item.getEmail());
-//        editor.commit();
-//        Bundle arg = new Bundle();
-//        arg.putSerializable("ContactDetail", item);
-//        ContactDetailFragment bp = new ContactDetailFragment();
-//        bp.setArguments(arg);
-//        loadFragmentHelper(bp);
-    }
 
     @Override
     public void onPendingListFragmentInteraction(ContactDetail item) {
@@ -452,6 +436,12 @@ public class HomeActivity extends AppCompatActivity
     public void onAcceptedListFragmentInteraction(ContactDetail item) {
 
     }
+
+    @Override
+    public void onSentListFragmentInteractionListener(ContactDetail item) {
+
+    }
+
 
     // Deleting the Pushy device token must be done asynchronously. Good thing
     // we have something that allows us to do that.

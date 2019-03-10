@@ -26,13 +26,17 @@ public class ContactsFragment extends Fragment {
 
 
     private RecyclerView pendingRecyclerView;
-    private RecyclerView acceptedRecyclerView;
+    private RecyclerView sentRecyclierView;
 
     private List<ContactDetail> mPendingContacts;
-    private List<ContactDetail> mAcceptedContacts;
+    private List<ContactDetail> mSentContacts;
 
     private OnPendingListFragmentInteractionListener mPendingListener;
-    private OnAcceptedListFragmentInteractionListener mAcceptedListener;
+    private OnSentListFragmentInteractionListener mSentListener;
+
+    private String mMemberID;
+    private String mJwToken;
+
 
 
     public ContactsFragment() {
@@ -48,13 +52,15 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mPendingContacts = new ArrayList<ContactDetail>(
                     Arrays.asList((ContactDetail[]) getArguments().getSerializable("pendingcontacts")));
 
-            mAcceptedContacts = new ArrayList<ContactDetail>(
-                    Arrays.asList((ContactDetail[]) getArguments().getSerializable("acceptedcontacts")));
+            mSentContacts = new ArrayList<ContactDetail>(
+                    Arrays.asList((ContactDetail[]) getArguments().getSerializable("sentcontacts")));
+
+            mJwToken = getArguments().getString("jwtoken");
+            mMemberID = getArguments().getString("memberid");
         }
     }
 
@@ -66,19 +72,19 @@ public class ContactsFragment extends Fragment {
         Context context = v.getContext();
 
         pendingRecyclerView = v.findViewById(R.id.list_pending);
-        acceptedRecyclerView = v.findViewById(R.id.list_accepted);
+        sentRecyclierView = v.findViewById(R.id.list_sent);
 
         RecyclerView.LayoutManager pendingLayoutManager = new LinearLayoutManager(context);
-        RecyclerView.LayoutManager acceptedLayoutManager = new LinearLayoutManager(context);
+        RecyclerView.LayoutManager sentLayoutManager = new LinearLayoutManager(context);
 
         pendingRecyclerView.setLayoutManager(pendingLayoutManager);
-        acceptedRecyclerView.setLayoutManager(acceptedLayoutManager);
+        sentRecyclierView.setLayoutManager(sentLayoutManager);
 
-        MyPendingRecyclerViewAdapter pendingAdapter = new MyPendingRecyclerViewAdapter(mPendingContacts, mPendingListener);
-        MyAcceptedRecyclerViewAdapter acceptedAdapter = new MyAcceptedRecyclerViewAdapter(mAcceptedContacts, mAcceptedListener);
+        MyPendingRecyclerViewAdapter pendingAdapter = new MyPendingRecyclerViewAdapter(mPendingContacts, mPendingListener, mMemberID, mJwToken);
+        MySentRecyclerViewAdapter sentAdapter = new MySentRecyclerViewAdapter(mSentContacts, mSentListener, mMemberID, mJwToken);
 
         pendingRecyclerView.setAdapter(pendingAdapter);
-        acceptedRecyclerView.setAdapter(acceptedAdapter);
+        sentRecyclierView.setAdapter(sentAdapter);
 
         return v;
     }
@@ -88,8 +94,8 @@ public class ContactsFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof ContactsFragment.OnPendingListFragmentInteractionListener) {
             mPendingListener = (ContactsFragment.OnPendingListFragmentInteractionListener) context;
-        } else if(context instanceof ContactsFragment.OnAcceptedListFragmentInteractionListener) {
-            mAcceptedListener = (ContactsFragment.OnAcceptedListFragmentInteractionListener) context;
+        } else if(context instanceof ContactsFragment.OnSentListFragmentInteractionListener) {
+            mSentListener = (ContactsFragment.OnSentListFragmentInteractionListener) context;
 
         } else {
             throw new RuntimeException(context.toString()
@@ -101,14 +107,14 @@ public class ContactsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mPendingListener = null;
-        mAcceptedListener = null;
+        mSentListener = null;
     }
 
 
     public interface OnPendingListFragmentInteractionListener {
         void onPendingListFragmentInteraction(ContactDetail item);
     }
-    public interface OnAcceptedListFragmentInteractionListener {
-        void onAcceptedListFragmentInteraction(ContactDetail item);
+    public interface OnSentListFragmentInteractionListener {
+        void onSentListFragmentInteractionListener(ContactDetail item);
     }
 }
