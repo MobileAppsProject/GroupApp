@@ -36,6 +36,7 @@ public class LoginFragment extends Fragment {
     private String mJwt;
     public static String mUserId;
     public String mMemberID;
+    private String mUserName;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -229,8 +230,12 @@ public class LoginFragment extends Fragment {
 
                 mUserId = resultsJSON.getString(
                             getString(R.string.keys_json_login_userid));
-//                mMemberID = resultsJSON.getString(
-//                            "memberid");
+
+                mUserName = resultsJSON.getString(
+                        "username");
+                mCredentials = new Credentials.Builder(mCredentials.getEmail(), mCredentials.getPassword())
+                                .addUsername(mUserName)
+                                .build();
 
                 Log.d("UserID", "My UserId: " + mUserId);
                 new RegisterForPushNotificationsAsync().execute();

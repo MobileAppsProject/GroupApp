@@ -40,7 +40,7 @@ public class SuccessFragment extends Fragment {
             TextView weather = (TextView) v.findViewById(R.id.fragSuccess_weather_textView);
 
             weather.setText("The weather is 34ºF in Tacoma, Wa");
-            userEmail.setText("Welcome, " + c.getEmail());
+            userEmail.setText("Welcome, " + c.getUsername());
         }
         return v;
     }
