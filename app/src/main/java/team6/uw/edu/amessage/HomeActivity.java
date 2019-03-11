@@ -36,6 +36,7 @@ import team6.uw.edu.amessage.contact.ContactDetail;
 import team6.uw.edu.amessage.model.Credentials;
 import team6.uw.edu.amessage.utils.GetAsyncTask;
 import team6.uw.edu.amessage.utils.SendPostAsyncTask;
+import team6.uw.edu.amessage.weather.WeatherDetail;
 
 
 public class HomeActivity extends AppCompatActivity
@@ -47,7 +48,8 @@ public class HomeActivity extends AppCompatActivity
                     ContactsFragment.OnPendingListFragmentInteractionListener,
                     ContactsFragment.OnSentListFragmentInteractionListener,
                     chatMessageListFragment.OnListFragmentInteractionListener,
-                    AddChatFragment.OnListFragmentInteractionListener
+                    AddChatFragment.OnListFragmentInteractionListener,
+                    WeatherForecastFragment.OnListFragmentInteractionListener
                     {
 
     private Credentials myCredentials;
@@ -522,6 +524,11 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(ContactDetail item) {
+
+    }
+
+    @Override
+    public void onWeatherListFragmentInteraction(WeatherDetail item) {
 
     }
 
