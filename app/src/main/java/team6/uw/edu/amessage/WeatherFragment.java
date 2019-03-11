@@ -152,7 +152,7 @@ public class WeatherFragment extends Fragment {
         // send in the zip code
         try {
             zipJson.put("zipcode", zipCode);
-            System.out.println("zip was put; it was " + zipCode);
+            //System.out.println("zip was put; it was " + zipCode);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -178,38 +178,41 @@ public class WeatherFragment extends Fragment {
 
                     JSONObject innerWeather = arrObj.getJSONObject("weather");
                     String desc = innerWeather.getString("description");
-                    TextView descTextView =(TextView) getActivity().findViewById(R.id.weatherFrag_Desc_TextView);
-                    System.out.println("root json desc is" + desc);
-                    descTextView.setText(desc);
-
-                    String icon_url = innerWeather.getString("icon");
-                    String img_url = "https://www.weatherbit.io/static/img/icons/" + icon_url +".png";
-                    new DownloadImageTask((ImageView) getActivity().findViewById(R.id.imageView3))
-                            .execute(img_url);
-
-                    double temp = convertToFahrenheit(Double.parseDouble(arrObj.getString("temp")));
-                    mTemp = temp;
-                    TextView currentTextView = (TextView) getActivity().findViewById(R.id.weatherFrag_Curr_TextView);
-                    currentTextView.setText(temp + " ºF");
-                    System.out.println("root json state is" + arrObj.get("state_code"));
-                    System.out.println("root json; i = " + i + " temp is" + temp);
-
-                    String cityName = arrObj.get("city_name").toString();
-                    mCityName = cityName;
-                    TextView cityTextView = (TextView) getActivity().findViewById(R.id.weatherFrag_City_TextView);
-                    cityTextView.setText("Weather for " + cityName);
-
-                    // Update location which will be populated on forecasts
-                    String theLon = arrObj.get("lon").toString();
-                    System.out.print("lon: " + theLon + " response from web service");
-                    mCurrentLocation.setLongitude(Double.parseDouble(theLon));
-                    String theLat = arrObj.get("lat").toString();
-                    System.out.print("lat: " + theLat + " response from web service");
-                    mCurrentLocation.setLatitude(Double.parseDouble(theLat));
+                    //System.out.println("current activity is: " + getActivity().toString());
+                    if(getActivity() != null) { //handle exceptions
+                        TextView descTextView = (TextView) getActivity().findViewById(R.id.weatherFrag_Desc_TextView);
+                        System.out.println("root json desc is" + desc);
+                        descTextView.setText(desc);
 
 
-                    WeatherDetail.Builder weatherObj = new WeatherDetail.Builder("date", arrObj.getString("temp"), desc);
+                        String icon_url = innerWeather.getString("icon");
+                        String img_url = "https://www.weatherbit.io/static/img/icons/" + icon_url + ".png";
+                        new DownloadImageTask((ImageView) getActivity().findViewById(R.id.imageView3))
+                                .execute(img_url);
 
+                        double temp = convertToFahrenheit(Double.parseDouble(arrObj.getString("temp")));
+                        mTemp = temp;
+                        TextView currentTextView = (TextView) getActivity().findViewById(R.id.weatherFrag_Curr_TextView);
+                        currentTextView.setText(temp + " ºF");
+                        System.out.println("root json state is" + arrObj.get("state_code"));
+                        System.out.println("root json; i = " + i + " temp is" + temp);
+
+                        String cityName = arrObj.get("city_name").toString();
+                        mCityName = cityName;
+                        TextView cityTextView = (TextView) getActivity().findViewById(R.id.weatherFrag_City_TextView);
+                        cityTextView.setText("Weather for " + cityName);
+
+                        // Update location which will be populated on forecasts
+                        String theLon = arrObj.get("lon").toString();
+                        System.out.print("lon: " + theLon + " response from web service");
+                        mCurrentLocation.setLongitude(Double.parseDouble(theLon));
+                        String theLat = arrObj.get("lat").toString();
+                        System.out.print("lat: " + theLat + " response from web service");
+                        mCurrentLocation.setLatitude(Double.parseDouble(theLat));
+
+
+                        WeatherDetail.Builder weatherObj = new WeatherDetail.Builder("date", arrObj.getString("temp"), desc);
+                    }
                 }
 
 
@@ -444,6 +447,22 @@ public class WeatherFragment extends Fragment {
             };
             createLocationRequest();
         }
+
+        //Send this to Success Activity
+       /* SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        String defaultValue = sharedPref.getString("myCurrWeather", null);
+        if (defaultValue == null) {
+            defaultValue = "";
+        } else
+        if (!defaultValue.contains(mCityName)){
+            defaultValue += "\n";
+            defaultValue += "The weather in " + mCityName + " is " + mTemp ;
+        }
+
+        Log.d("Armoni", "This is value: " + defaultValue);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("myCurrWeather", defaultValue);
+        editor.commit();*/
 
     }
 
