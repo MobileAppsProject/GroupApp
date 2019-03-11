@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements
         intent.putExtra("Login", theUser);
         intent.putExtra(getString(R.string.keys_intent_notification_msg), mLoadFromChatNotification);
         intent.putExtra(getString(R.string.keys_intent_jwt), jwt);
+
         startActivity(intent);
         finish();
     }

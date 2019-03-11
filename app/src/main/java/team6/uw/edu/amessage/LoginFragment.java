@@ -35,6 +35,7 @@ public class LoginFragment extends Fragment {
     private Credentials mCredentials;
     private String mJwt;
     public static String mUserId;
+    public String mMemberID;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -221,7 +222,6 @@ public class LoginFragment extends Fragment {
             boolean success =
                     resultsJSON.getBoolean(
                             getString(R.string.keys_json_login_success));
-//            Log.d("UserId", "handleLoginOnPost: " + resultsJSON);
             if (success) {
                 //Login was successful. Switch to the loadSuccessFragment.
                 mJwt = resultsJSON.getString(
@@ -229,6 +229,8 @@ public class LoginFragment extends Fragment {
 
                 mUserId = resultsJSON.getString(
                             getString(R.string.keys_json_login_userid));
+//                mMemberID = resultsJSON.getString(
+//                            "memberid");
 
                 Log.d("UserID", "My UserId: " + mUserId);
                 new RegisterForPushNotificationsAsync().execute();
