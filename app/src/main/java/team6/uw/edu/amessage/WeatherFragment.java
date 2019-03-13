@@ -38,6 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import team6.uw.edu.amessage.utils.SendPostAsyncTask;
@@ -193,7 +194,8 @@ public class WeatherFragment extends Fragment {
                         double temp = convertToFahrenheit(Double.parseDouble(arrObj.getString("temp")));
                         mTemp = temp;
                         TextView currentTextView = (TextView) getActivity().findViewById(R.id.weatherFrag_Curr_TextView);
-                        currentTextView.setText(temp + " ºF");
+                        DecimalFormat df = new DecimalFormat("#.##"); //limit decimal places
+                        currentTextView.setText(df.format(temp) + " ºF");
                         System.out.println("root json state is" + arrObj.get("state_code"));
                         System.out.println("root json; i = " + i + " temp is" + temp);
 
