@@ -3,16 +3,15 @@ package team6.uw.edu.amessage.weather;
 import java.io.Serializable;
 
 /**
- * Class to encapsulate a ContactDetail. Building an Object requires a publish date and title.
+ * Class to encapsulate a WeatherDetail.
+ * Building an Object requires a date, temp, and description.
  *
- * Optional fields include URL, teaser, and Author.
-
  */
 public class WeatherDetail implements Serializable {
 
-    private final String mDate;
-    private final String mTemp;
-    private final String mDescription;
+    private final String mDate; // the date of weather
+    private final String mTemp; // the weather temperature
+    private final String mDescription; // the description of weather
 
     /**
      * Helper class for building Weather.
@@ -29,6 +28,7 @@ public class WeatherDetail implements Serializable {
          *
          * @param date the day
          * @param temp the temperature that day
+         * @param description the description of the weather
          */
         public Builder(String date, String temp, String description) {
             this.mDate = date;
@@ -36,26 +36,45 @@ public class WeatherDetail implements Serializable {
             this.mDescription = description;
         }
 
+        /**
+         * @return a new WeatherDetail
+         */
         public WeatherDetail build() {
             return new WeatherDetail(this);
         }
 
     }
 
+    /**
+     * Private constructor that sets corresponding fields.
+     * @param builder built from above.
+     */
     private WeatherDetail(final Builder builder) {
         this.mDate = builder.mDate;
         this.mTemp = builder.mTemp;
         this.mDescription = builder.mDescription;
     }
 
+    /**
+     * Retrieve date.
+     * @return date
+     */
     public String getDate() {
         return mDate;
     }
 
+    /**
+     * Retrieve temperature.
+     * @return temp
+     */
     public String getTemp() {
         return mTemp;
     }
 
+    /**
+     * Retrieve description of weather.
+     * @return description
+     */
     public String getDescription() {
         return mDescription;
     }

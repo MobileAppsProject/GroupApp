@@ -3,10 +3,13 @@ package team6.uw.edu.amessage.weather;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to generate Weather forecasts.
+ */
 public final class WeatherGenerator {
 
-    public static final List<WeatherDetail> WEATHER_FORECASTS;
-    public static final int COUNT = 10;
+    public static final List<WeatherDetail> WEATHER_FORECASTS; // list of weather forecasts
+    public static final int COUNT = 10; // initial count for number of days
 
 
     static {

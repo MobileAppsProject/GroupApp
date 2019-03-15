@@ -45,6 +45,7 @@ import team6.uw.edu.amessage.utils.SendPostAsyncTask;
 import team6.uw.edu.amessage.weather.WeatherDetail;
 
 /**
+ * Fragment that displays the weather in the app.
  * A simple {@link Fragment} subclass.
  */
 public class WeatherFragment extends Fragment {
@@ -60,14 +61,14 @@ public class WeatherFragment extends Fragment {
     public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
     private static final int MY_PERMISSIONS_LOCATIONS = 8414;
     private LocationRequest mLocationRequest;
-    private Location mCurrentLocation;
+    private Location mCurrentLocation; // current location
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
     private TextView mLocationTextView;
-    private boolean mIteration;
-    private ArrayList<Location> mFaves;
-    private String mCityName;
-    private double mTemp;
+    private boolean mIteration; // boolean that determines if map was opened or not
+    private ArrayList<Location> mFaves; // list of favorite locations
+    private String mCityName; // name of city of current location
+    private double mTemp; // temp of current location
 
 
     public WeatherFragment() {
@@ -101,6 +102,10 @@ public class WeatherFragment extends Fragment {
         return v;
     }
 
+    /**
+     * Loads favorites fragment.
+     * @param view: current view
+     */
     private void viewFave(View view) {
         Fragment frag = new WeatherFaveFragment();
         FragmentTransaction transaction = getActivity().getSupportFragmentManager()
@@ -115,6 +120,11 @@ public class WeatherFragment extends Fragment {
         transaction.commit();
     }
 
+    /**
+     * Sets location displayed as a favorite location.
+     * Added to SharedPreferences.
+     * @param view
+     */
     private void setAsFave(View view) {
         if(mCurrentLocation != null) {
             mFaves.add(mCurrentLocation);
@@ -139,6 +149,10 @@ public class WeatherFragment extends Fragment {
 
     }
 
+    /**
+     * Makes web service call by passing in a zip code.
+     * @param view
+     */
     private void onZipSearchButtonClicked(View view) {
         System.out.println("button clicked");
         EditText zipCodeEdit = getActivity().findViewById(R.id.weatherFrag_Zip_EditText);
@@ -165,12 +179,16 @@ public class WeatherFragment extends Fragment {
 
     }
 
+    /**
+     * Gets response from web service and displays respective fields
+     * to the user of the app.
+     * @param result
+     */
     private void handleSendOnPostExecute(final String result) {
         System.out.println("entered postexecute");
         try {
             //this is the result from the web service
             JSONObject root = new JSONObject(result);
-            //System.out.println("Response from web service: " + root.toString());
             if(root.has("weatherData")) {
                 JSONArray arr = root.getJSONArray("weatherData");
                 System.out.println("root json" + arr.toString());
@@ -179,7 +197,6 @@ public class WeatherFragment extends Fragment {
 
                     JSONObject innerWeather = arrObj.getJSONObject("weather");
                     String desc = innerWeather.getString("description");
-                    //System.out.println("current activity is: " + getActivity().toString());
                     if(getActivity() != null) { //handle exceptions
                         TextView descTextView = (TextView) getActivity().findViewById(R.id.weatherFrag_Desc_TextView);
                         System.out.println("root json desc is" + desc);
@@ -206,10 +223,8 @@ public class WeatherFragment extends Fragment {
 
                         // Update location which will be populated on forecasts
                         String theLon = arrObj.get("lon").toString();
-                        System.out.print("lon: " + theLon + " response from web service");
                         mCurrentLocation.setLongitude(Double.parseDouble(theLon));
                         String theLat = arrObj.get("lat").toString();
-                        System.out.print("lat: " + theLat + " response from web service");
                         mCurrentLocation.setLatitude(Double.parseDouble(theLat));
 
 
@@ -228,10 +243,19 @@ public class WeatherFragment extends Fragment {
         }
     }
 
+    /**
+     * Converts from default Celsius to Fahrenheit.
+     * @param v: the temp in Celcius
+     * @return temp in Fahrenheit
+     */
     private double convertToFahrenheit(double v) {
         return (v * 9/5) + 32;
     }
 
+    /**
+     * Make web service call for 24 hour forecast.
+     * @param view
+     */
     private void onHourlyButtonClicked(View view) {
         String uri = new Uri.Builder()
                 .scheme("https")
@@ -258,6 +282,10 @@ public class WeatherFragment extends Fragment {
                 .build().execute();
     }
 
+    /**
+     * Make web service call based on 10 day forecast.
+     * @param view
+     */
     private void onExtendedButtonClicked(View view) {
         String uri = new Uri.Builder()
                 .scheme("https")
@@ -281,18 +309,19 @@ public class WeatherFragment extends Fragment {
                 .build().execute();
     }
 
+    /**
+     * Gets response from web service and displays 10 day forecast to user of app.
+     * @param s
+     */
     private void handleSendOnPostExecuteExtend(String s) {
         System.out.println("entered EXTEND postexecute");
         try {
             //this is the result from the web service
             JSONObject root = new JSONObject(s);
-            System.out.println("extend Response from web service: " + root.toString());
 
             if(root.has("weatherData")) {
                 JSONObject weatherObj = root.getJSONObject("weatherData");
-                System.out.println("extend weatherObj" + weatherObj.toString());
                 JSONArray weatherArr = weatherObj.getJSONArray("data");
-                System.out.println("extend weatherArr" + weatherArr.toString());
 
                 ArrayList<WeatherDetail> theList = new ArrayList<>();
                 for(int i = 0; i < weatherArr.length(); i++) {
@@ -340,6 +369,10 @@ public class WeatherFragment extends Fragment {
         }
     }
 
+    /**
+     * Gets web service response and displays 24 hour forecast to user of app.
+     * @param s
+     */
     private void handleSendOnPostExecuteHourly(String s) {
         System.out.println("entered HOURLY postexecute");
         try {
@@ -400,6 +433,10 @@ public class WeatherFragment extends Fragment {
         }
     }
 
+    /**
+     * Handles map button click by loading new maps activity.
+     * @param view
+     */
     private void onMapButtonClicked(View view) {
         Toast.makeText(getActivity(), "Click anywhere on map to get location's weather",
                 Toast.LENGTH_LONG).show();
@@ -450,24 +487,13 @@ public class WeatherFragment extends Fragment {
             createLocationRequest();
         }
 
-        //Send this to Success Activity
-       /* SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-        String defaultValue = sharedPref.getString("myCurrWeather", null);
-        if (defaultValue == null) {
-            defaultValue = "";
-        } else
-        if (!defaultValue.contains(mCityName)){
-            defaultValue += "\n";
-            defaultValue += "The weather in " + mCityName + " is " + mTemp ;
-        }
-
-        Log.d("Armoni", "This is value: " + defaultValue);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("myCurrWeather", defaultValue);
-        editor.commit();*/
 
     }
 
+    /**
+     * Makes web service call for the current weather conditions.
+     * @param loc: current location
+     */
     private void callWebService(Location loc) {
         setLocation(loc);
         Log.d("LOCATION", loc.toString());
@@ -494,6 +520,10 @@ public class WeatherFragment extends Fragment {
                 .build().execute();
     }
 
+    /**
+     * Asks for permissions to access location. If approved, a web service to obtain current conditions
+     * is called.
+     */
     private void requestLocation() {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
@@ -546,6 +576,9 @@ public class WeatherFragment extends Fragment {
         }
     }
 
+    /**
+     * Class to download weather icon to display.
+     */
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
@@ -587,15 +620,12 @@ public class WeatherFragment extends Fragment {
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
+    /**
+     * Sets the current location.
+     * @param location: the location to set.
+     */
     private void setLocation(final Location location) {
         mCurrentLocation = location;
-
-        System.out.println("location is " + mCurrentLocation.getLatitude() + " " + mCurrentLocation.getLongitude());
-        //mLocationTextView = getActivity().findViewById(R.id.weatherFrag_Coord_TextView);
-        System.out.println(" setLocation getLat" + mCurrentLocation.getLatitude());
-        /*if(mLocationTextView != null) {
-            mLocationTextView.setText("Coords: " + mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude());
-        }*/
     }
 
 }

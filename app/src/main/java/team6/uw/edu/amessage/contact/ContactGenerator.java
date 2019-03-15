@@ -3,6 +3,9 @@ package team6.uw.edu.amessage.contact;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to generate contacts.
+ */
 public final class ContactGenerator {
 
     public static final List<ContactDetail> CONTACT_DETAIL_LIST;

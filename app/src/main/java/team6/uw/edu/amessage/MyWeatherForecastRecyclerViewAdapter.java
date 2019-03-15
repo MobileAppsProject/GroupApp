@@ -26,8 +26,14 @@ public class MyWeatherForecastRecyclerViewAdapter extends RecyclerView.Adapter<M
     private final List<WeatherDetail> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyWeatherForecastRecyclerViewAdapter(List<WeatherDetail> blogs, OnListFragmentInteractionListener listener) {
-        mValues = blogs;
+
+    /**
+     * Sets the values and interaction listeners.
+     * @param wd set to mValues
+     * @param listener set to mListener
+     */
+    public MyWeatherForecastRecyclerViewAdapter(List<WeatherDetail> wd, OnListFragmentInteractionListener listener) {
+        mValues = wd;
         mListener = listener;
     }
 
@@ -53,6 +59,9 @@ public class MyWeatherForecastRecyclerViewAdapter extends RecyclerView.Adapter<M
         return mValues.size();
     }
 
+    /**
+     * Class that defines the view elements.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mDateView;
@@ -74,6 +83,9 @@ public class MyWeatherForecastRecyclerViewAdapter extends RecyclerView.Adapter<M
         }
     }
 
+    /**
+     * Class that downloads the weather icons for forecasts.
+     */
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView bmImage;
 
@@ -81,6 +93,11 @@ public class MyWeatherForecastRecyclerViewAdapter extends RecyclerView.Adapter<M
             this.bmImage = bmImage;
         }
 
+        /**
+         * Returns bitmap.
+         * @param urls
+         * @return
+         */
         protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
             Bitmap mIcon11 = null;
@@ -94,6 +111,10 @@ public class MyWeatherForecastRecyclerViewAdapter extends RecyclerView.Adapter<M
             return mIcon11;
         }
 
+        /**
+         * Display icon to user.
+         * @param result
+         */
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
         }

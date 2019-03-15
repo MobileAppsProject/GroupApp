@@ -11,6 +11,7 @@ import team6.uw.edu.amessage.model.Credentials;
 
 
 /**
+ * Fragment that displays information after successful registration.
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link RegSuccessInfoFragment.OnFragmentInteractionListener} interface
@@ -18,12 +19,13 @@ import team6.uw.edu.amessage.model.Credentials;
  */
 public class RegSuccessInfoFragment extends Fragment {
 
-    private Credentials mCredentials;
+    private Credentials mCredentials; // credentials that were built
 
 
     public RegSuccessInfoFragment() {
         // Required empty public constructor
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,6 +47,10 @@ public class RegSuccessInfoFragment extends Fragment {
 
     }
 
+    /**
+     * Displays login fragment when button clicked.
+     * @param view: the current view
+     */
     private void onLoginButtonClicked(View view) {
         Bundle args = new Bundle();
         args.putSerializable("Login", mCredentials);

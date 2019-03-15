@@ -18,7 +18,7 @@ import team6.uw.edu.amessage.weather.WeatherDetail;
 import team6.uw.edu.amessage.weather.WeatherGenerator;
 
 /**
- * A fragment representing a list of Items.
+ * A fragment representing a list of WeatherForecasts.
  * <p/>
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.

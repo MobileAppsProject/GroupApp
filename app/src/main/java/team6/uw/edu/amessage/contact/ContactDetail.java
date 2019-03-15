@@ -3,7 +3,7 @@ package team6.uw.edu.amessage.contact;
 import java.io.Serializable;
 
 /**
- * Class to encapsulate a ContactDetail. Building an Object requires a publish date and title.
+ * Class to encapsulate a ContactDetail. Building an Object requires a first/last name.
  *
  * Optional fields include URL, teaser, and Author.
  *
@@ -45,7 +45,7 @@ public class ContactDetail implements Serializable {
         }
 
         /**
-         * Add an optional url for the full blog post.
+         * Add email for contact.
          * @param val an optional url for the full blog post
          * @return the Builder of this ContactDetail
          */
@@ -55,8 +55,8 @@ public class ContactDetail implements Serializable {
         }
 
         /**
-         * Add an optional teaser for the full blog post.
-         * @param val an optional url teaser for the full blog post.
+         * Add user ID.
+         * @param val user ID for the contact
          * @return the Builder of this ContactDetail
          */
         public Builder addUserId(final String val) {
@@ -80,6 +80,10 @@ public class ContactDetail implements Serializable {
 
     }
 
+    /**
+     * Sets corresponding fields.
+     * @param builder
+     */
     private ContactDetail(final Builder builder) {
         this.mFirstName = builder.mFirstName;
         this.mLastName = builder.mLastName;
@@ -88,30 +92,58 @@ public class ContactDetail implements Serializable {
         this.mAuthor = builder.mAuthor;
     }
 
+    /**
+     * Get first name of contact.
+     * @return first name
+     */
     public String getFirstName() {
         return mFirstName;
     }
 
+    /**
+     * Get last name of contact.
+     * @return last name
+     */
     public String getLastName() {
         return mLastName;
     }
 
+    /**
+     * Get email of contact.
+     * @return email
+     */
     public String getEmail() {
         return mEmail;
     }
 
+    /**
+     * Get user ID of contact.
+     * @return ID
+     */
     public String getUserId() {
         return mUserId;
     }
 
+    /**
+     * Get author.
+     * @return
+     */
     public String getAuthor() {
         return mAuthor;
     }
 
+    /**
+     * Set selected.
+     * @param selected
+     */
     public void setSelected(boolean selected) {
         isSelected = selected;
     }
 
+    /**
+     * Returns if selected.
+     * @return
+     */
     public boolean isSelected() {
         return isSelected;
     }

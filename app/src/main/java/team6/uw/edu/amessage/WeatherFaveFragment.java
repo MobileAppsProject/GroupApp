@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 
 /**
+ * Fragment that displays favorite weather locations.
  * A simple {@link Fragment} subclass.
  */
 public class WeatherFaveFragment extends Fragment {
@@ -23,6 +24,9 @@ public class WeatherFaveFragment extends Fragment {
     }
 
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
