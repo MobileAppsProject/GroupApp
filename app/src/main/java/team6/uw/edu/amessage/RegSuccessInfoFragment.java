@@ -11,22 +11,28 @@ import team6.uw.edu.amessage.model.Credentials;
 
 
 /**
- * Fragment that displays information after successful registration.
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link RegSuccessInfoFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
+ * This will be used when a user successfully logs into a account.
  */
 public class RegSuccessInfoFragment extends Fragment {
 
     private Credentials mCredentials; // credentials that were built
 
-
+    /**
+     * Required empty public constructor.
+     */
     public RegSuccessInfoFragment() {
         // Required empty public constructor
     }
 
-
+    /**
+     * This will the first thing that is created and will set up all the buttons and information
+     * for the user.
+     *
+     * @param inflater           the layout to inflate.
+     * @param container          the container to inflate the layout in.
+     * @param savedInstanceState the saved information sent to the fragment.
+     * @return the view/layout that has been inflated.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,19 +48,19 @@ public class RegSuccessInfoFragment extends Fragment {
             //just passing this along to the next fragment (login)
         }
 
-        
         return v;
 
     }
 
     /**
      * Displays login fragment when button clicked.
+     *
      * @param view: the current view
      */
     private void onLoginButtonClicked(View view) {
         Bundle args = new Bundle();
         args.putSerializable("Login", mCredentials);
-        LoginFragment loginFragment= new LoginFragment();
+        LoginFragment loginFragment = new LoginFragment();
         loginFragment.setArguments(args);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frame_main_container, loginFragment)
@@ -73,6 +79,5 @@ public class RegSuccessInfoFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
     }
 }

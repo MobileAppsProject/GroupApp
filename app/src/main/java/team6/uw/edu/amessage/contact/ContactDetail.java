@@ -3,13 +3,7 @@ package team6.uw.edu.amessage.contact;
 import java.io.Serializable;
 
 /**
- * Class to encapsulate a ContactDetail. Building an Object requires a first/last name.
- *
- * Optional fields include URL, teaser, and Author.
- *
- *
- * @author Charles Bryan
- * @version 14 September 2018
+ * Class to display all the information about a user.
  */
 public class ContactDetail implements Serializable {
 
@@ -22,22 +16,20 @@ public class ContactDetail implements Serializable {
 
     /**
      * Helper class for building Credentials.
-     *
-     * @author Charles Bryan
      */
     public static class Builder {
         private final String mFirstName;
         private final String mLastName;
-        private  String mEmail = "";
-        private  String mUserId = "";
-        private  String mAuthor = "";
+        private String mEmail = "";
+        private String mUserId = "";
+        private String mAuthor = "";
 
 
         /**
          * Constructs a new Builder.
          *
          * @param pubDate the published date of the blog post
-         * @param title the title of the blog post
+         * @param title   the title of the blog post
          */
         public Builder(String pubDate, String title) {
             this.mFirstName = pubDate;
@@ -46,7 +38,7 @@ public class ContactDetail implements Serializable {
 
         /**
          * Add email for contact.
-         * @param val an optional url for the full blog post
+         *
          * @return the Builder of this ContactDetail
          */
         public Builder addEmail(final String val) {
@@ -56,7 +48,7 @@ public class ContactDetail implements Serializable {
 
         /**
          * Add user ID.
-         * @param val user ID for the contact
+         *
          * @return the Builder of this ContactDetail
          */
         public Builder addUserId(final String val) {
@@ -66,7 +58,7 @@ public class ContactDetail implements Serializable {
 
         /**
          * Add an optional author of the blog post.
-         * @param val an optional author of the blog post.
+         *
          * @return the Builder of this ContactDetail
          */
         public Builder addAuthor(final String val) {
@@ -74,6 +66,11 @@ public class ContactDetail implements Serializable {
             return this;
         }
 
+        /**
+         * This will build the builder object.
+         *
+         * @return the new contact.
+         */
         public ContactDetail build() {
             return new ContactDetail(this);
         }
@@ -82,7 +79,8 @@ public class ContactDetail implements Serializable {
 
     /**
      * Sets corresponding fields.
-     * @param builder
+     *
+     * @param builder the new builder.
      */
     private ContactDetail(final Builder builder) {
         this.mFirstName = builder.mFirstName;
@@ -94,6 +92,7 @@ public class ContactDetail implements Serializable {
 
     /**
      * Get first name of contact.
+     *
      * @return first name
      */
     public String getFirstName() {
@@ -102,6 +101,7 @@ public class ContactDetail implements Serializable {
 
     /**
      * Get last name of contact.
+     *
      * @return last name
      */
     public String getLastName() {
@@ -110,6 +110,7 @@ public class ContactDetail implements Serializable {
 
     /**
      * Get email of contact.
+     *
      * @return email
      */
     public String getEmail() {
@@ -118,6 +119,7 @@ public class ContactDetail implements Serializable {
 
     /**
      * Get user ID of contact.
+     *
      * @return ID
      */
     public String getUserId() {
@@ -126,6 +128,7 @@ public class ContactDetail implements Serializable {
 
     /**
      * Get author.
+     *
      * @return
      */
     public String getAuthor() {
@@ -134,6 +137,7 @@ public class ContactDetail implements Serializable {
 
     /**
      * Set selected.
+     *
      * @param selected
      */
     public void setSelected(boolean selected) {
@@ -142,6 +146,7 @@ public class ContactDetail implements Serializable {
 
     /**
      * Returns if selected.
+     *
      * @return
      */
     public boolean isSelected() {

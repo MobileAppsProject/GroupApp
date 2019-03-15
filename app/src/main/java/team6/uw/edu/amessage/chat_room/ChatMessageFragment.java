@@ -36,23 +36,16 @@ import team6.uw.edu.amessage.chat_message_list_recycler_view.chatMessageListRecy
 import team6.uw.edu.amessage.utils.PushReceiver;
 import team6.uw.edu.amessage.utils.SendPostAsyncTask;
 
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ChatMessageFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
+ * This is the fragment that will set up all the correct view to
+ * show the messages of a specific chat room.
  */
 public class ChatMessageFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
-
     private static final String TAG = "CHAT_FRAG";
-
     private static final String CHAT_ID = "1";
-
     private EditText mMessageInputEditText;
-
     private String mEmail;
     private String mJwToken;
     private String mSendUrl;
@@ -62,16 +55,25 @@ public class ChatMessageFragment extends Fragment {
     private RecyclerView mMessageRecycler;
     private chatMessageListRecyclerViewAdapter mMessageAdapter;
 
-
+    /**
+     * Required default constructor.
+     */
     public ChatMessageFragment() {
-        // Required empty public constructor
     }
 
 
+    /**
+     * This is the on create view that will set up the chat message recylcer view to be
+     * displayed.
+     *
+     * @param inflater the layout to be show.
+     * @param container the container to place the layout in.
+     * @param savedInstanceState the current saved data being passed to this fragment.
+     * @return the new fragment being inflated.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        R.layout.fragment_chat_message //THIS IS THE CURRENT WORKING ONE!
         //Inflate the layout for this fragment
         View rootLayout = inflater.inflate(R.layout.fragment_chat_message, container, false);
         //1.) Get a reference to the recycler view.
@@ -95,13 +97,14 @@ public class ChatMessageFragment extends Fragment {
         if (savedInstanceState != null) {
             mMessageInputEditText = rootLayout.findViewById(R.id.fragChatMsg_chatbox_editText);
             rootLayout.findViewById(R.id.fragChatMsg_chatboxSend_button).setOnClickListener(this::handleSendClick);
-
         }
-
-
         return rootLayout;
     }
 
+    /**
+     * This is the first thing that happens when the fragment is restarted allowing for the
+     * chat messages to be show.
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -140,7 +143,9 @@ public class ChatMessageFragment extends Fragment {
 
     }
 
-    //This will load the wait fragment.
+    /**
+     *  This will load the wait fragment.
+     */
     public void onWaitFragmentInteractionShow() {
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
@@ -149,36 +154,42 @@ public class ChatMessageFragment extends Fragment {
                 .commit();
     }
 
+    /**
+     * This will hide the loading screen.
+     */
     public void onWaitFragmentInteractionHide() {
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .remove(getActivity().getSupportFragmentManager().findFragmentByTag("WAIT"))
                 .commit();
     }
+
+    /**
+     * This will get all the chats depending on the user id entered.
+     * @param result the messages shown.
+     */
     private void getAllChatTask(final String result) {
         try {
             //This is the result from the web service
             JSONObject res = new JSONObject(result);
-            if(res.getJSONArray("messages") != null) {
-                JSONArray arr = res.getJSONArray ("messages");
-                Log.d("armoni", "getAllChatTask: " + arr.length());
+            if (res.getJSONArray("messages") != null) {
+                JSONArray arr = res.getJSONArray("messages");
                 List<Messages> userMessages = new ArrayList<>();
                 for (int i = arr.length() - 1; i >= 0; i--) {
-                    JSONObject obj =  new JSONObject(arr.get(i).toString());
+                    JSONObject obj = new JSONObject(arr.get(i).toString());
                     String sender = obj.getString("email");
                     String messageText = obj.getString("message");
                     String timeStamp = obj.getString("timestamp");
                     String userId = obj.getString("memberid");
 
                     String milTime = timeStamp.substring(11, 13) + timeStamp.substring(14, 16);
-                    Log.d("TIME CONVERSIN", "getAllChatTask: " + milTime);
                     Date date = new SimpleDateFormat("hhmm").parse(milTime);
                     SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
 
                     userMessages.add(new Messages.Builder(userId, messageText)
-                                        .addUserEmail(sender)
-                                        .addTimeStamp("" + sdf.format(date))
-                                        .build());
+                            .addUserEmail(sender)
+                            .addTimeStamp("" + sdf.format(date))
+                            .build());
 
                 }
 
@@ -201,6 +212,11 @@ public class ChatMessageFragment extends Fragment {
             onWaitFragmentInteractionHide();
         }
     }
+
+    /**
+     * This method will be called when the fragment is resumed allowing for loading in
+     * notifications.
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -210,38 +226,23 @@ public class ChatMessageFragment extends Fragment {
         }
         IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
         getActivity().registerReceiver(mPushMessageReciever, iFilter);
-
-
-//        mSendUrl = new Uri.Builder()
-//                .scheme("https")
-//                .appendPath(getString(R.string.ep_base_url))
-//                .appendPath(getString(R.string.ep_messaging_base))
-//                .appendPath(getString(R.string.ep_chatmessages_get))
-//                .build()
-//                .toString();
-//        JSONObject messageJson = new JSONObject();
-//        try {
-//            Log.d("Armoni", "onResume: chatID" + mChatId);
-//            messageJson.put("chatId", mChatId);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//
-//        new SendPostAsyncTask.Builder(mSendUrl, messageJson)
-//                .onPreExecute(this::onWaitFragmentInteractionShow)
-//                .onPostExecute(this::getAllChatTask)
-//                .onCancelled(error -> Log.e(TAG, error))
-//                .build().execute();
     }
 
+    /**
+     * This is the on pause allowing to remove a pushy receiver.
+     */
     @Override
     public void onPause() {
         super.onPause();
-        if (mPushMessageReciever != null){
+        if (mPushMessageReciever != null) {
             getActivity().unregisterReceiver(mPushMessageReciever);
         }
     }
 
+    /**
+     * This will handle when creating a new message to be sent.
+     * @param theButton the current sent button being clicked.
+     */
     private void handleSendClick(final View theButton) {
         String msg = mMessageInputEditText.getText().toString();
         JSONObject messageJson = new JSONObject();
@@ -269,13 +270,18 @@ public class ChatMessageFragment extends Fragment {
                 .build().execute();
     }
 
+    /**
+     * This will be filter only the messages between each chat room and only
+     * display the correct chat.
+     * @param result
+     */
     private void endOfSendMsgTask(final String result) {
         try {
             //This is the result from the web service
             JSONObject response = new JSONObject(result);
 
             //This means that the message has been sent and stored in the database.
-            if(response.has("success")  && response.getBoolean("success")) {
+            if (response.has("success") && response.getBoolean("success")) {
                 //The web service got our message. Time to clear out the input EditText
                 mMessageInputEditText.setText("");
 
@@ -314,17 +320,16 @@ public class ChatMessageFragment extends Fragment {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.hasExtra("SENDER") && intent.hasExtra("MESSAGE")
-                                && intent.hasExtra("CHATID")) {
+            if (intent.hasExtra("SENDER") && intent.hasExtra("MESSAGE")
+                    && intent.hasExtra("CHATID")) {
 
                 String sender = intent.getStringExtra("SENDER");
                 String messageText = intent.getStringExtra("MESSAGE");
                 String chatId = intent.getStringExtra("CHATID");
                 //This is where we will want to add it to the recycler view.
                 //If the user sent is in the same chatID.
-                Log.d("OnRECIEVED Out side if", "onReceive: " + chatId + ", " +mChatId);
+                Log.d("OnRECIEVED Out side if", "onReceive: " + chatId + ", " + mChatId);
                 if (Integer.parseInt(chatId) == Integer.parseInt(mChatId)) {
-                    Log.d("OnRECIEVED", "onReceive: " + chatId + ", " +mChatId);
                     //Update our chat with the new incoming message.
                     mSendUrl = new Uri.Builder()
                             .scheme("https")
@@ -351,15 +356,19 @@ public class ChatMessageFragment extends Fragment {
             }
         }
 
+        /**
+         * This is a inner method to display all current chats.
+         * @param result the chats.
+         */
         private void getAllChatMessages(final String result) {
             try {
                 //This is the result from the web service
                 JSONObject res = new JSONObject(result);
-                if(res.getJSONArray("messages") != null) {
-                    JSONArray arr = res.getJSONArray ("messages");
+                if (res.getJSONArray("messages") != null) {
+                    JSONArray arr = res.getJSONArray("messages");
                     List<Messages> userMessages = new ArrayList<>();
                     for (int i = arr.length() - 1; i >= 0; i--) {
-                        JSONObject obj =  new JSONObject(arr.get(i).toString());
+                        JSONObject obj = new JSONObject(arr.get(i).toString());
                         String sender = obj.getString("email");
                         String messageText = obj.getString("message");
                         String timeStamp = obj.getString("timestamp");
@@ -372,7 +381,6 @@ public class ChatMessageFragment extends Fragment {
 
                     }
                     mMessageList = userMessages;
-//                    Log.d("armoni", "Size of the new list. " + mMessageList.size());
                     mMessageAdapter = new chatMessageListRecyclerViewAdapter(mMessageList);
 
                     mMessageRecycler.setAdapter(mMessageAdapter);
@@ -386,6 +394,10 @@ public class ChatMessageFragment extends Fragment {
 
     }
 
+    /**
+     * Default on attach.
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -397,6 +409,9 @@ public class ChatMessageFragment extends Fragment {
         }
     }
 
+    /**
+     * Default on detach.
+     */
     @Override
     public void onDetach() {
         super.onDetach();

@@ -25,7 +25,8 @@ public final class ContactGenerator {
     }
 
 
-    private ContactGenerator() { }
+    private ContactGenerator() {
+    }
 
 
 }

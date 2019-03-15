@@ -5,7 +5,6 @@ import java.io.Serializable;
 /**
  * Class to encapsulate a WeatherDetail.
  * Building an Object requires a date, temp, and description.
- *
  */
 public class WeatherDetail implements Serializable {
 
@@ -15,7 +14,6 @@ public class WeatherDetail implements Serializable {
 
     /**
      * Helper class for building Weather.
-     *
      */
     public static class Builder {
         private final String mDate;
@@ -26,8 +24,8 @@ public class WeatherDetail implements Serializable {
         /**
          * Constructs a new Builder.
          *
-         * @param date the day
-         * @param temp the temperature that day
+         * @param date        the day
+         * @param temp        the temperature that day
          * @param description the description of the weather
          */
         public Builder(String date, String temp, String description) {
@@ -47,6 +45,7 @@ public class WeatherDetail implements Serializable {
 
     /**
      * Private constructor that sets corresponding fields.
+     *
      * @param builder built from above.
      */
     private WeatherDetail(final Builder builder) {
@@ -57,6 +56,7 @@ public class WeatherDetail implements Serializable {
 
     /**
      * Retrieve date.
+     *
      * @return date
      */
     public String getDate() {
@@ -65,6 +65,7 @@ public class WeatherDetail implements Serializable {
 
     /**
      * Retrieve temperature.
+     *
      * @return temp
      */
     public String getTemp() {
@@ -73,12 +74,12 @@ public class WeatherDetail implements Serializable {
 
     /**
      * Retrieve description of weather.
+     *
      * @return description
      */
     public String getDescription() {
         return mDescription;
     }
-
 
 
 }

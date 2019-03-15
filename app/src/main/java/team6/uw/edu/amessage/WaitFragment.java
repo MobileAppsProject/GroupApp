@@ -7,16 +7,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-//import instructor.tcss450.uw.edu.phishapp.R;
-
+/**
+ * This class will be used to display a waiting screen when a
+ * async task is being done.
+ */
 public class WaitFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    /**
+     * Required empty public constructor
+     */
     public WaitFragment() {
         // Required empty public constructor
     }
 
+    /**
+     * This will the first thing that is created and will set up all the information
+     * for the waiting screen.
+     *
+     * @param inflater           the layout to inflate.
+     * @param container          the container to inflate the layout in.
+     * @param savedInstanceState the saved information sent to the fragment.
+     * @return the view/layout that has been inflated.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -24,6 +38,11 @@ public class WaitFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_wait, container, false);
     }
 
+    /**
+     * Default on attach method.
+     *
+     * @param context the current context of the frag.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -35,6 +54,9 @@ public class WaitFragment extends Fragment {
         }
     }
 
+    /**
+     * Default on detach.
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -53,6 +75,7 @@ public class WaitFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         void onWaitFragmentInteractionShow();
+
         void onWaitFragmentInteractionHide();
     }
 }

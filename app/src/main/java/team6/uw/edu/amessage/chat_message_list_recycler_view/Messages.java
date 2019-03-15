@@ -3,16 +3,9 @@ package team6.uw.edu.amessage.chat_message_list_recycler_view;
 import java.io.Serializable;
 
 /**
- * Class to encapsulate a Phish.net Blog Post. Building an Object requires a publish date and title.
- *
- * Optional fields include URL, teaser, and Author.
- *
- *
- * @author Charles Bryan
- * @version 14 September 2018
+ * A class to hold all the information about a current message.
  */
 public class Messages implements Serializable {
-    //
     private final String mUserId;
     private final String mMessage;
     private final String mTimeStamp;
@@ -34,7 +27,7 @@ public class Messages implements Serializable {
          * Constructs a new Builder.
          *
          * @param theUserId the published date of the blog post
-         * @param theMsg the title of the blog post
+         * @param theMsg    the title of the blog post
          */
         public Builder(String theUserId, String theMsg) {
             this.mUserId = theUserId;
@@ -43,6 +36,7 @@ public class Messages implements Serializable {
 
         /**
          * Add an optional url for the full blog post.
+         *
          * @param theTimeStamp an optional url for the full blog post
          * @return the Builder of this ChatRoom
          */
@@ -53,6 +47,7 @@ public class Messages implements Serializable {
 
         /**
          * Add an optional teaser for the full blog post.
+         *
          * @param theUserEmail an optional url teaser for the full blog post.
          * @return the Builder of this ChatRoom
          */
@@ -68,6 +63,12 @@ public class Messages implements Serializable {
 
     }
 
+    /**
+     * Constructor for building the object allowing for more security and
+     * more optional parameters.
+     *
+     * @param builder the incoming builder to be constructed.
+     */
     private Messages(final Builder builder) {
         this.mUserId = builder.mUserId;
         this.mMessage = builder.mMessage;
@@ -75,22 +76,41 @@ public class Messages implements Serializable {
         this.mUserEmail = builder.mUserEmail;
     }
 
+    /**
+     * Allows to get the user id.
+     *
+     * @return the user id.
+     */
     public String getUserId() {
         return mUserId;
     }
 
+    /**
+     * This message of the current user.
+     *
+     * @return the message.
+     */
     public String getMessage() {
         return mMessage;
     }
 
+    /**
+     * The time stamp of message sent.
+     *
+     * @return the time.
+     */
     public String getTimeStamp() {
         return mTimeStamp;
     }
 
+    /**
+     * The user email sending the message.
+     *
+     * @return the email.
+     */
     public String getUserEmail() {
         return mUserEmail;
     }
-
 
 
 }

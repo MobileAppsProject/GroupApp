@@ -86,9 +86,9 @@ public class ConnectionsFragment extends Fragment {
         mUsername = view.findViewById(R.id.radio_button_username);
         mEmail = view.findViewById(R.id.radio_button_email);
         mFirstAndLast = view.findViewById(R.id.radio_button_fullname);
-        mUsername.setOnClickListener(this:: onRadioButtonClicked);
-        mEmail.setOnClickListener(this:: onRadioButtonClicked);
-        mFirstAndLast.setOnClickListener(this:: onRadioButtonClicked);
+        mUsername.setOnClickListener(this::onRadioButtonClicked);
+        mEmail.setOnClickListener(this::onRadioButtonClicked);
+        mFirstAndLast.setOnClickListener(this::onRadioButtonClicked);
 
 
         acceptedRecyclerView = view.findViewById(R.id.list);
@@ -96,16 +96,18 @@ public class ConnectionsFragment extends Fragment {
         acceptedRecyclerView.setAdapter(new MyAcceptedRecyclerViewAdapter(mAcceptedContacts, mAcceptedListener, mMemberID));
         return view;
     }
+
     public void onRadioButtonClicked(View view) {
         if (mUsername.isChecked())
             mMessageInputEditText.setHint("Username");
         if (mEmail.isChecked())
             mMessageInputEditText.setHint("Email");
-        if(mFirstAndLast.isChecked()) {
+        if (mFirstAndLast.isChecked()) {
             mMessageInputEditText.setHint("First and Last Name");
         }
 
     }
+
     public void onSendButtonClicked(View view) {
         String input = mMessageInputEditText.getText().toString();
 
@@ -168,12 +170,13 @@ public class ConnectionsFragment extends Fragment {
                 .addHeaderField("authorization", mJwToken)
                 .build().execute();
     }
+
     private void endOfSendRequest(final String result) {
         try {
             //This is the result from the web service
             JSONObject response = new JSONObject(result);
             Log.w("ConnectionsFragment", "This is the res: " + response);
-            if(response.has("success")  && response.getBoolean("success")) {
+            if (response.has("success") && response.getBoolean("success")) {
                 //The web service got our message. Time to clear out the input EditText
                 mMessageInputEditText.setText("");
                 String user = response.getString("user");
@@ -191,10 +194,11 @@ public class ConnectionsFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof ConnectionsFragment.OnAcceptedListFragmentInteractionListener) {
+        if (context instanceof ConnectionsFragment.OnAcceptedListFragmentInteractionListener) {
             mAcceptedListener = (ConnectionsFragment.OnAcceptedListFragmentInteractionListener) context;
 
         } else {
