@@ -3,8 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#448AFF</color>
-    <color name="cardViewBackGround">#e5e5e5</color>
+    <color name="cardViewBackGround">#5fc9f8</color>
     <color name="blue">#448AFF</color>
-    <color name="darkblue">#0288D1</color>
+    <color name="color">#c4dff6</color>
 
+    <color name="darkblue">#0288D1</color>
 </resources>

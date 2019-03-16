@@ -25,16 +25,40 @@ import team6.uw.edu.amessage.contact.ContactGenerator;
 public class ContactsFragment extends Fragment {
 
 
+    /**
+     * Pending list recycler view
+     */
     private RecyclerView pendingRecyclerView;
+    /**
+     * Sent list recycler view
+     */
     private RecyclerView sentRecyclierView;
 
+    /**
+     * List of pending contacts from home activity
+     */
     private List<ContactDetail> mPendingContacts;
+    /**
+     * List of sent contacts from Home activity
+     */
     private List<ContactDetail> mSentContacts;
 
+    /**
+     * Listener for pending connection list view item. No functionality yet
+     */
     private OnPendingListFragmentInteractionListener mPendingListener;
+    /**
+     * Listener for sent connection list view item. No functionality yet
+     */
     private OnSentListFragmentInteractionListener mSentListener;
 
+    /**
+     * Current login user's memberID
+     */
     private String mMemberID;
+    /**
+     * Authorization token
+     */
     private String mJwToken;
 
 
@@ -49,6 +73,11 @@ public class ContactsFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * On create method for Contact Fragment
+     * Initializes the two lists needed for the recycler views
+     * @param savedInstanceState Bundle from Homeactivity
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +93,15 @@ public class ContactsFragment extends Fragment {
         }
     }
 
+    /**
+     * Creates the two recycler view adapter and layout manager to create
+     * the recycler view. The two lists are inside a nested scroll view
+     *
+     * @param inflater view inflater
+     * @param container viewgroup container
+     * @param savedInstanceState saved instances from home activity
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -89,6 +127,10 @@ public class ContactsFragment extends Fragment {
         return v;
     }
 
+    /**
+     * On attach for two listeners
+     * @param context for fragment
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -103,6 +145,9 @@ public class ContactsFragment extends Fragment {
         }
     }
 
+    /**
+     * On detach for the two listeners
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -111,9 +156,16 @@ public class ContactsFragment extends Fragment {
     }
 
 
+    /**
+     * Interface for the pending list item interaction
+     */
     public interface OnPendingListFragmentInteractionListener {
         void onPendingListFragmentInteraction(ContactDetail item);
     }
+
+    /**
+     * Interface for sent list item interaction
+     */
     public interface OnSentListFragmentInteractionListener {
         void onSentListFragmentInteractionListener(ContactDetail item);
     }

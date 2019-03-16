@@ -36,15 +36,21 @@ import team6.uw.edu.amessage.utils.SendPostAsyncTask;
  */
 public class ConnectionsFragment extends Fragment {
 
+    /**
+     * List of contacts for connections
+     */
     private List<ContactDetail> mAcceptedContacts;
+    /**
+     * Listener for your connections list view item
+     */
     private OnAcceptedListFragmentInteractionListener mAcceptedListener;
-    private RecyclerView acceptedRecyclerView;
-    private EditText mMessageInputEditText;
-    private RadioButton mUsername;
-    private RadioButton mEmail;
-    private RadioButton mFirstAndLast;
-    private String mMemberID;
-    private String mJwToken;
+    private RecyclerView acceptedRecyclerView; // your connections
+    private EditText mMessageInputEditText; // search text input
+    private RadioButton mUsername;  // Radio button for username
+    private RadioButton mEmail; // Radio button for email
+    private RadioButton mFirstAndLast;  // Radio button for the name
+    private String mMemberID;  //User member id
+    private String mJwToken; // Authorization token
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -60,6 +66,10 @@ public class ConnectionsFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Initializes list for your connections recycler view
+     * @param savedInstanceState from home activity
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +83,15 @@ public class ConnectionsFragment extends Fragment {
     }
 
 
+    /**
+     * Initialize the radio buttons and the onclick listeners for those buttons.
+     * Also for the send button to search for contacts
+     *
+     * @param inflater layout inflater
+     * @param container viewgroup container
+     * @param savedInstanceState from home activity
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -96,6 +115,11 @@ public class ConnectionsFragment extends Fragment {
         acceptedRecyclerView.setAdapter(new MyAcceptedRecyclerViewAdapter(mAcceptedContacts, mAcceptedListener, mMemberID));
         return view;
     }
+
+    /**
+     * Displays different hint for the search
+     * @param view current view
+     */
     public void onRadioButtonClicked(View view) {
         if (mUsername.isChecked())
             mMessageInputEditText.setHint("Username");
@@ -106,6 +130,13 @@ public class ConnectionsFragment extends Fragment {
         }
 
     }
+
+    /**
+     * Sends a post request to send a connection request, depending on which email
+     * is checked it will hit a different endpoint specific to the search option
+     *
+     * @param view current view
+     */
     public void onSendButtonClicked(View view) {
         String input = mMessageInputEditText.getText().toString();
 
@@ -168,6 +199,14 @@ public class ConnectionsFragment extends Fragment {
                 .addHeaderField("authorization", mJwToken)
                 .build().execute();
     }
+
+    /**
+     * Once the connection request have been sent, it displays a toast
+     * message indicating status of that request. User could not exist,
+     * or already sent request, or declined a request. This error message is generated
+     * in the web service
+     * @param result
+     */
     private void endOfSendRequest(final String result) {
         try {
             //This is the result from the web service

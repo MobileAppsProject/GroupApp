@@ -1,7 +1,6 @@
 package team6.uw.edu.amessage;
 
 import android.net.Uri;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
@@ -12,22 +11,35 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import team6.uw.edu.amessage.contact.ContactDetail;
 import team6.uw.edu.amessage.utils.SendPostAsyncTask;
 
+/**
+ * Recycler view adapter for pending connection requests
+ */
 public class MyPendingRecyclerViewAdapter extends RecyclerView.Adapter<MyPendingRecyclerViewAdapter.ViewHolder>{
+    // List of pending contacts
     private final List<ContactDetail> mContacts;
+    // Listener for Pending contact list item
     private final ContactsFragment.OnPendingListFragmentInteractionListener mListener;
+    // User jwt token
     private String mJwToken;
+    // User memberid
     private String mMemberID;
 
+    /**
+     * Recycler view adapter for the users pending requests
+     *
+     * @param contacts list of pending contacts
+     * @param listener list view action listener
+     * @param memberid user memberid
+     * @param token authorization token
+     */
     public MyPendingRecyclerViewAdapter(List<ContactDetail> contacts,
                                         ContactsFragment.OnPendingListFragmentInteractionListener listener, String memberid,
                                         String token) {
@@ -37,6 +49,13 @@ public class MyPendingRecyclerViewAdapter extends RecyclerView.Adapter<MyPending
         mJwToken = token;
     }
 
+    /**
+     * inflates the layout for the list view item and returns it
+     *
+     * @param parent contact fragment
+     * @param viewType view type
+     * @return the adapter
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -44,12 +63,18 @@ public class MyPendingRecyclerViewAdapter extends RecyclerView.Adapter<MyPending
         return new MyPendingRecyclerViewAdapter.ViewHolder(view);
     }
 
+    /**
+     * Binds contact object, user email, username, button to accept request
+     * and button to decline request
+     *
+     * @param holder Holds data for the list item
+     * @param position position in the contact list
+     */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mContacts.get(position);
         holder.mEmail.setText(mContacts.get(position).getEmail());
         holder.mFname.setText(Html.fromHtml(mContacts.get(position).getFirstName()));
-
 
         holder.mAccept.setOnClickListener(v -> {
             Toast.makeText(holder.mView.getContext(),
@@ -121,6 +146,13 @@ public class MyPendingRecyclerViewAdapter extends RecyclerView.Adapter<MyPending
             }
         });
     }
+
+    /**
+     * If a user declines a request it removes that contact from the
+     * contact table
+     *
+     * @param result of declining a request
+     */
     public void handleDeclineContactOnPostExecute(final String result) {
         try {
             //This is the result from the web service
@@ -137,6 +169,12 @@ public class MyPendingRecyclerViewAdapter extends RecyclerView.Adapter<MyPending
             Log.e("ERROR!", e.getMessage());
         }
     }
+
+    /**
+     * If the user accepts the request, it verifies the contact between
+     * the two users
+     * @param result
+     */
     public void handleAcceptContactOnPostExecute(final String result) {
         try {
             //This is the result from the web service
@@ -159,14 +197,26 @@ public class MyPendingRecyclerViewAdapter extends RecyclerView.Adapter<MyPending
         return mContacts.size();
     }
 
+    /**
+     * Views needed for pending requests and its buttons
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
+        // List itme view
         public final View mView;
+        // User email of the request
         public final TextView mEmail;
+        // Username of request
         public final TextView mFname;
         public ContactDetail mItem;
+        // Button for accepting request
         public Button mAccept;
+        // Button for declining requests
         public Button mNo;
 
+        /**
+         * Initializes the views needed for user
+         * @param view
+         */
         public ViewHolder(View view) {
             super(view);
             mView = view;

@@ -1,25 +1,37 @@
 package team6.uw.edu.amessage;
 
-import android.net.Uri;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import java.util.List;
 
 import team6.uw.edu.amessage.contact.ContactDetail;
 
+/**
+ * Adapter for the sent connection request list item
+ */
 public class MySentRecyclerViewAdapter extends RecyclerView.Adapter<MySentRecyclerViewAdapter.ViewHolder>{
+    // List of sent contacts
     private final List<ContactDetail> mContacts;
+    // Listener for the sent contact list view item
     private final ContactsFragment.OnSentListFragmentInteractionListener mListener;
+    // Authorization token
     private String mJwToken;
+    // User memberid
     private String mMemberID;
 
+    /**
+     * Initializes the info needed for the sent connection
+     * request list item
+     *
+     * @param contacts list of sent contacts
+     * @param listener Doesnt do anything yet
+     * @param memberid User member id
+     * @param token Authorization toekn
+     */
     public MySentRecyclerViewAdapter(List<ContactDetail> contacts,
                                         ContactsFragment.OnSentListFragmentInteractionListener listener, String memberid,
                                         String token) {
@@ -29,6 +41,12 @@ public class MySentRecyclerViewAdapter extends RecyclerView.Adapter<MySentRecycl
         mJwToken = token;
     }
 
+    /**
+     *
+     * @param parent Recycler list
+     * @param viewType type
+     * @return layout for the list item
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -36,6 +54,12 @@ public class MySentRecyclerViewAdapter extends RecyclerView.Adapter<MySentRecycl
         return new MySentRecyclerViewAdapter.ViewHolder(view);
     }
 
+    /**
+     * Binds information needed for the sent contact list item
+     *
+     * @param holder holds contact
+     * @param position in the contact list
+     */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mContacts.get(position);
@@ -59,13 +83,23 @@ public class MySentRecyclerViewAdapter extends RecyclerView.Adapter<MySentRecycl
         return mContacts.size();
     }
 
+    /**
+     * ViewHolder for Sent Recycler view
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
+        // View
         public final View mView;
+        // Contact email
         public final TextView mEmail;
+        // Contact username
         public final TextView mFname;
         public ContactDetail mItem;
 
 
+        /**
+         * Retrieves the view items needed for list itme
+         * @param view list view item
+         */
         public ViewHolder(View view) {
             super(view);
             mView = view;
