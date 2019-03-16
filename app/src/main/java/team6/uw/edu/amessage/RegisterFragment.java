@@ -24,10 +24,8 @@ import team6.uw.edu.amessage.model.Credentials;
 import team6.uw.edu.amessage.utils.SendPostAsyncTask;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnRegisterFragmentInteractionListener} interface
- * to handle interaction events.
+ * This is the register fragment that will be used to allow a user to
+ * register and check all there information.
  */
 public class RegisterFragment extends Fragment {
 
@@ -35,11 +33,22 @@ public class RegisterFragment extends Fragment {
     private static final String TAG = "LoginFrag";
     private Credentials mCredentials;
 
+    /**
+     * This default constructor that is required.
+     */
     public RegisterFragment() {
         // Required empty public constructor
     }
 
-
+    /**
+     * This will the first thing that is created and will set up all the buttons and information
+     * for the user to register.
+     *
+     * @param inflater           the layout to inflate.
+     * @param container          the container to inflate the layout in.
+     * @param savedInstanceState the saved information sent to the fragment.
+     * @return the view/layout that has been inflated.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,7 +65,10 @@ public class RegisterFragment extends Fragment {
         return v;
 
     }
-    //This will call the the register fragment to be called.
+
+    /**
+     * This will call the the register fragment to be called.
+     */
     public void onRegisterClicked(View view) {
         if (mListener != null) {
 
@@ -67,7 +79,6 @@ public class RegisterFragment extends Fragment {
             EditText userPassword = (EditText) getActivity().findViewById(R.id.fragRegister_password_editText);
             EditText userRetypePassword = (EditText) getActivity().findViewById(R.id.fragRegister_retypePassword_editText);
 
-            //TODO Clean up the logic better and decompose.
             boolean hasError = false;
             if (userName.getText().length() == 0) {
                 hasError = true;
@@ -84,9 +95,7 @@ public class RegisterFragment extends Fragment {
             if (userEmail.getText().length() == 0) {
                 hasError = true;
                 userEmail.setError("Field must not be empty.");
-                //TODO Change this to the better method of checking for email using method down bellow.
-                //!isEmailValid(emailEdit.getText().toString())
-            }  else if (userEmail.getText().toString().chars() .filter(ch -> ch =='@').count() != 1) {
+            } else if (userEmail.getText().toString().chars().filter(ch -> ch == '@').count() != 1) {
                 hasError = true;
                 userEmail.setError("Field must contain a valid email address.");
             }
@@ -147,10 +156,11 @@ public class RegisterFragment extends Fragment {
 
     /**
      * Handle errors that may occur during the AsyncTask.
+     *
      * @param result the error message provide from the AsyncTask
      */
     private void handleErrorsInTask(String result) {
-        Log.e("ASYNC_TASK_ERROR",  result);
+        Log.e("ASYNC_TASK_ERROR", result);
     }
 
     /**
@@ -163,6 +173,7 @@ public class RegisterFragment extends Fragment {
     /**
      * Handle onPostExecute of the AsynceTask. The result from our webservice is
      * a JSON formatted String. Parse it for success or failure.
+     *
      * @param result the JSON formatted String response from the web service
      */
     private void handleRegisterOnPost(String result) {
@@ -188,7 +199,7 @@ public class RegisterFragment extends Fragment {
         } catch (JSONException e) {
             //It appears that the web service did not return a JSON formatted
             //String or it did not have what we expected in it.
-            Log.e("JSON_PARSE_ERROR",  result
+            Log.e("JSON_PARSE_ERROR", result
                     + System.lineSeparator()
                     + e.getMessage());
 
@@ -204,6 +215,11 @@ public class RegisterFragment extends Fragment {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    /**
+     * This is the default on attach method.
+     *
+     * @param context context of the fragment.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -215,6 +231,9 @@ public class RegisterFragment extends Fragment {
         }
     }
 
+    /**
+     * Default on detach.
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -233,7 +252,9 @@ public class RegisterFragment extends Fragment {
      */
     public interface OnRegisterFragmentInteractionListener extends WaitFragment.OnFragmentInteractionListener {
         void onRegisterSuccess(Credentials theUser);
+
         void onWaitFragmentInteractionShow();
+
         void onWaitFragmentInteractionHide();
 
     }

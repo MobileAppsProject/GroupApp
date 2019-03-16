@@ -3,6 +3,10 @@ package team6.uw.edu.amessage.chat_message_list_recycler_view;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Default class to make messages allowing for testing
+ * and displaying default data.
+ */
 public final class MessagesGenerator {
 
     public static final List<Messages> CHAT_MESSAGES;
@@ -28,7 +32,8 @@ public final class MessagesGenerator {
     }
 
 
-    private MessagesGenerator() { }
+    private MessagesGenerator() {
+    }
 
 
 }

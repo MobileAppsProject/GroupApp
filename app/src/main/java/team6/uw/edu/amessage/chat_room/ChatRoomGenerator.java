@@ -3,6 +3,10 @@ package team6.uw.edu.amessage.chat_room;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Default chat room generator allowing for you to test the
+ * chat rooms without dynamic data.
+ */
 public final class ChatRoomGenerator {
 
     public static final List<ChatRoom> CHAT_MESSAGES;
@@ -15,7 +19,7 @@ public final class ChatRoomGenerator {
 
             CHAT_MESSAGES.add(i, new ChatRoom
                     .Builder(i + 1,
-                        "The name")
+                    "The name")
                     .addTeaser("Come Chat!!!")
 //                    .addEmail("Not working.")
                     .build());
@@ -23,7 +27,8 @@ public final class ChatRoomGenerator {
     }
 
 
-    private ChatRoomGenerator() { }
+    private ChatRoomGenerator() {
+    }
 
 
 }

@@ -14,17 +14,17 @@ import java.util.function.Consumer;
 /**
  * Implemented AsyncTask that makes a Get call to a web service.  Builds the Task
  * requiring a fully formed URL.
- *
+ * <p>
  * Optional parameters include actions for onPreExecute, onProgressUpdate, onPostExecute, and
  * onCancelled.
- *
+ * <p>
  * An action for onProgressUpdate is included but a call to publishProgress is never made in
  * doInBackground rendering onProgressUpdate unused.
- *
+ * <p>
  * The method cancel() is called in doInBackGround during exception handling. Use the action
  * onCnCancelled to respond to exceptional situations resulting from doInBackground execution.
  * Note that external cancellation will cause the same action to execute.
- *
+ * <p>
  * Created by Charles Bryan on 3/22/2018.
  *
  * @author Charles Bryan
@@ -50,10 +50,14 @@ public class GetAsyncTask extends AsyncTask<Void, String, String> {
         private final String mUrl;
 
         //Optional Parameters
-        private Runnable onPre = () -> {};
-        private Consumer<String[]> onProg = X -> {};
-        private Consumer<String> onPost = x -> {};
-        private Consumer<String> onCancel = x -> {};
+        private Runnable onPre = () -> {
+        };
+        private Consumer<String[]> onProg = X -> {
+        };
+        private Consumer<String> onPost = x -> {
+        };
+        private Consumer<String> onCancel = x -> {
+        };
         private Map<String, String> headers;
 
         /**
@@ -117,7 +121,8 @@ public class GetAsyncTask extends AsyncTask<Void, String, String> {
 
         /**
          * Add a Key/Value pair to be set in the Header of the HTTP request.
-         * @param key the key of the pair
+         *
+         * @param key   the key of the pair
          * @param value the vaue of the pair
          * @return
          */
@@ -168,14 +173,14 @@ public class GetAsyncTask extends AsyncTask<Void, String, String> {
             URL urlObject = new URL(mUrl);
             urlConnection = (HttpURLConnection) urlObject.openConnection();
 
-            for (final String key: mHeaders.keySet()) {
+            for (final String key : mHeaders.keySet()) {
                 urlConnection.setRequestProperty(key, mHeaders.get(key));
             }
 
             InputStream content = urlConnection.getInputStream();
             BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
             String s = "";
-            while((s = buffer.readLine()) != null) {
+            while ((s = buffer.readLine()) != null) {
                 response.append(s);
             }
             publishProgress();
@@ -184,7 +189,7 @@ public class GetAsyncTask extends AsyncTask<Void, String, String> {
                     + e.getMessage());
             cancel(true);
         } finally {
-            if(urlConnection != null) {
+            if (urlConnection != null) {
                 urlConnection.disconnect();
             }
         }

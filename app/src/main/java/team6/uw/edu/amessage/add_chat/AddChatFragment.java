@@ -29,16 +29,12 @@ import team6.uw.edu.amessage.contact.ContactGenerator;
 import team6.uw.edu.amessage.utils.SendPostAsyncTask;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * A fragment representing a list of chats allowing the user to add
+ * chats to there existing chats.
  */
 public class AddChatFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
     private RecyclerView mMessageRecycler;
@@ -54,8 +50,13 @@ public class AddChatFragment extends Fragment {
     public AddChatFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
+    /**
+     * This will be a static method allowing you to create a new instance to
+     * create a new instance.
+     *
+     * @param columnCount the amount of columns.
+     * @return the fragment.
+     */
     public static AddChatFragment newInstance(int columnCount) {
         AddChatFragment fragment = new AddChatFragment();
         Bundle args = new Bundle();
@@ -64,6 +65,12 @@ public class AddChatFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * This will be used for the first time when the fragment is
+     * created for the column.
+     *
+     * @param savedInstanceState package being sent in to the fragment.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +80,15 @@ public class AddChatFragment extends Fragment {
         }
     }
 
+    /**
+     * This will be the on create view for the first time the fragment is created.
+     * This will set up the recycler view inflate the layout.
+     *
+     * @param inflater the inflater.
+     * @param container the container to be sent in.
+     * @param savedInstanceState the bundle of saved info being sent over.
+     * @return Will return the inflated view.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -98,9 +114,13 @@ public class AddChatFragment extends Fragment {
         return rootLayout;
     }
 
+    /**
+     * This will handle when the user clicks on the button to make a new chat.
+     *
+     * @param theButton the incoming button.
+     */
     private void handleSendClick(final View theButton) {
         //Holds all the users that the user want to make a chat with.
-//        ArrayList<Integer> chatMembers = new ArrayList<>();
         for (ContactDetail model : mMessageList) {
             if (model.isSelected()) {
                 chatMembers.add(Integer.parseInt(model.getUserId()));
@@ -114,14 +134,13 @@ public class AddChatFragment extends Fragment {
         } else if (chatMembers.size() >= 1) {
             //Create a New Chat
             createChatRoom();
-            //Add all members to this current chat.
-//            addMemberToChatRoom(chatMembers);
-//            loadFragmentHelper(new ChatRoomFragment());
         }
-//        Log.d("CHATDEBUG","Output : " + chatMembers.toString());
-
     }
 
+    /**
+     * This will call a endpoint to make the create chat from the backend.
+     *
+     */
     private void createChatRoom() {
         String uri = new Uri.Builder()
                 .scheme("https")
@@ -144,6 +163,9 @@ public class AddChatFragment extends Fragment {
                 .build().execute();
     }
 
+    /**
+     * This will call a endpoint to add a member to a chatroom.
+     */
     private void addMemberToChatRoom() {
         String uri = new Uri.Builder()
                 .scheme("https")
@@ -153,12 +175,9 @@ public class AddChatFragment extends Fragment {
                 .build().toString();
         for (int i = 0; i < chatMembers.size(); i++) {
             JSONObject messageJson = new JSONObject();
-            //Send in the user ID
-//            Log.d("TESTING CHAT", "Chat ID: " + chatMembers.get(i) + "ChatID: " + mChatId);
             try {
                 messageJson.put("memberid", chatMembers.get(i));
                 messageJson.put("chatid", mChatId);
-                Log.d("IN>>>>TESTING CHAT", "Chat Member ID: " + chatMembers.get(i) + "ChatID: " + mChatId);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -170,18 +189,27 @@ public class AddChatFragment extends Fragment {
         }
     }
 
+    /**
+     * This is a helper function to help load a new fragment.
+     *
+     * @param s the incoming string.
+     */
     private void handleLoadFragPostExecute(String s) {
         loadFragmentHelper(new ChatRoomFragment());
     }
 
+    /**
+     * This will package up a user id to package of a json object. With
+     * the user id.
+     *
+     * @param s the incoming string.
+     */
     private void handleChatRoomChatIDSendOnPostExecute(String s) {
         try {
             //This is the result from the web service
             JSONObject root = new JSONObject(s);
-            if(root.has("chatid")) {
-                Log.d("OUTPUTH", "IN IF, " + root.toString());
+            if (root.has("chatid")) {
                 mChatId = root.getString("chatid");
-                Log.d("TESTING", "CHATID: " + mChatId);
                 addMemberToChatRoom();
             } else {
                 Log.e("ERROR!", "No response");
@@ -196,7 +224,9 @@ public class AddChatFragment extends Fragment {
 
     }
 
-    //Helper function for loading a fragment.
+    /**
+     * Helper function for loading a fragment.
+     */
     private void loadFragmentHelper(Fragment frag) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager()
                 .beginTransaction()
@@ -206,6 +236,9 @@ public class AddChatFragment extends Fragment {
         transaction.commit();
     }
 
+    /**
+     * This default method to call a endpoint to load all the chats of that user.
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -226,21 +259,19 @@ public class AddChatFragment extends Fragment {
         }
 
         new SendPostAsyncTask.Builder(uri.toString(), messageJson)
-//                .onPreExecute(this::onWaitFragmentInteractionShow)
                 .onPostExecute(this::handleMyContactsSendOnPostExecute)
-//                .addHeaderField("authorization", mJwToken) //add the JWT as a header
                 .build().execute();
     }
 
-    //This will get the parse the jason object.
+    /**
+     *  This will get the parse the jason object.
+     */
     private void handleMyContactsSendOnPostExecute(final String result) {
-//        Log.d("Armoni", "IN Method");
         try {
             //This is the result from the web service
             JSONObject root = new JSONObject(result);
-            if(root.has("myContacts")) {
-                Log.d("OUTPUTH", "IN IF, " + root.toString());
-                JSONArray arr = root.getJSONArray ("myContacts");
+            if (root.has("myContacts")) {
+                JSONArray arr = root.getJSONArray("myContacts");
                 List<team6.uw.edu.amessage.contact.ContactDetail> contacts = new ArrayList<>();
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = new JSONObject(arr.get(i).toString());
@@ -253,12 +284,9 @@ public class AddChatFragment extends Fragment {
                             .addEmail(email)
                             .addUserId(memberid)
                             .build());
-                    Log.d("Armoni", "f: " + firstname + ", " + lastname + ", " + username);
 
                 }
                 mMessageList = contacts;
-                Log.d("OUTPUTHERE", "handleMyContactsSendOnPostExecute: " + mMessageList.toString());
-
                 mMessageAdapter = new MyAddChatRecyclerViewAdapter(mMessageList, mListener);
 
                 //4.) set adapter
@@ -277,6 +305,10 @@ public class AddChatFragment extends Fragment {
         }
     }
 
+    /**
+     * This is the default on attach method.
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -288,6 +320,9 @@ public class AddChatFragment extends Fragment {
         }
     }
 
+    /**
+     * This is default onDetach.
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -305,7 +340,6 @@ public class AddChatFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(ContactDetail item);
     }
 }

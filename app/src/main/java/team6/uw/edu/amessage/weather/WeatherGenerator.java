@@ -17,7 +17,7 @@ public final class WeatherGenerator {
         for (int i = 0; i < COUNT; i++) {
             WEATHER_FORECASTS.add(i, new WeatherDetail
                     .Builder("Day " + i,
-                    "0","cloudy")
+                    "0", "cloudy")
                     .build());
         }
     }

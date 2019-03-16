@@ -105,9 +105,9 @@ public class ConnectionsFragment extends Fragment {
         mUsername = view.findViewById(R.id.radio_button_username);
         mEmail = view.findViewById(R.id.radio_button_email);
         mFirstAndLast = view.findViewById(R.id.radio_button_fullname);
-        mUsername.setOnClickListener(this:: onRadioButtonClicked);
-        mEmail.setOnClickListener(this:: onRadioButtonClicked);
-        mFirstAndLast.setOnClickListener(this:: onRadioButtonClicked);
+        mUsername.setOnClickListener(this::onRadioButtonClicked);
+        mEmail.setOnClickListener(this::onRadioButtonClicked);
+        mFirstAndLast.setOnClickListener(this::onRadioButtonClicked);
 
 
         acceptedRecyclerView = view.findViewById(R.id.list);
@@ -116,16 +116,18 @@ public class ConnectionsFragment extends Fragment {
         return view;
     }
 
+
     /**
      * Displays different hint for the search
      * @param view current view
      */
+
     public void onRadioButtonClicked(View view) {
         if (mUsername.isChecked())
             mMessageInputEditText.setHint("Username");
         if (mEmail.isChecked())
             mMessageInputEditText.setHint("Email");
-        if(mFirstAndLast.isChecked()) {
+        if (mFirstAndLast.isChecked()) {
             mMessageInputEditText.setHint("First and Last Name");
         }
 
@@ -212,7 +214,7 @@ public class ConnectionsFragment extends Fragment {
             //This is the result from the web service
             JSONObject response = new JSONObject(result);
             Log.w("ConnectionsFragment", "This is the res: " + response);
-            if(response.has("success")  && response.getBoolean("success")) {
+            if (response.has("success") && response.getBoolean("success")) {
                 //The web service got our message. Time to clear out the input EditText
                 mMessageInputEditText.setText("");
                 String user = response.getString("user");
@@ -230,10 +232,11 @@ public class ConnectionsFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof ConnectionsFragment.OnAcceptedListFragmentInteractionListener) {
+        if (context instanceof ConnectionsFragment.OnAcceptedListFragmentInteractionListener) {
             mAcceptedListener = (ConnectionsFragment.OnAcceptedListFragmentInteractionListener) context;
 
         } else {

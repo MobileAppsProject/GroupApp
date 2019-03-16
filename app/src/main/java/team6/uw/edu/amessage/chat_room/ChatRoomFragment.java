@@ -29,10 +29,7 @@ import team6.uw.edu.amessage.utils.SendPostAsyncTask;
 import static android.support.constraint.Constraints.TAG;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * This will class will allow for displaying and organizing chat rooms.
  */
 public class ChatRoomFragment extends Fragment {
 
@@ -52,7 +49,12 @@ public class ChatRoomFragment extends Fragment {
     public ChatRoomFragment() {
     }
 
-    @SuppressWarnings("unused")
+    /**
+     * This is a static method allowing to pass in a list of info.
+     *
+     * @param columnCount the number of items.
+     * @return the new frag.
+     */
     public static ChatRoomFragment newInstance(int columnCount) {
         ChatRoomFragment fragment = new ChatRoomFragment();
         Bundle args = new Bundle();
@@ -61,6 +63,11 @@ public class ChatRoomFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * First thing to be called and will call to set up recycler view.
+     *
+     * @param savedInstanceState the instance to be saved info passed.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +80,14 @@ public class ChatRoomFragment extends Fragment {
         }
     }
 
+    /**
+     * This will set up the fragment to show all the current chat rooms.
+     *
+     * @param inflater           the fragment to be inflated.
+     * @param container          the layout to inflate the fragment in.
+     * @param savedInstanceState saved information to be sent to this frag.
+     * @return the inflated frag.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -99,11 +114,18 @@ public class ChatRoomFragment extends Fragment {
         return rootLayout;
     }
 
+    /**
+     * This will be a click listener when a user wants to make a new chat room.
+     *
+     * @param theButton the button being clicked.
+     */
     private void handleSendClick(final View theButton) {
-        Log.d("CLICKEDSEND", "handleSendClick: CLICKED!");
         loadFragmentHelper(new AddChatFragment());
     }
-    //Helper function for loading a fragment.
+
+    /**
+     * Helper function for loading a fragment.
+     */
     private void loadFragmentHelper(Fragment frag) {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager()
                 .beginTransaction()
@@ -114,6 +136,9 @@ public class ChatRoomFragment extends Fragment {
     }
 
 
+    /**
+     * Fist thing when frag loads will set up all the chat rooms.
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -138,14 +163,17 @@ public class ChatRoomFragment extends Fragment {
                 .build().execute();
     }
 
+    /**
+     * This will get all the chat room tasks.
+     *
+     * @param result all the chat rooms being displayed.
+     */
     private void getAllChatRoomsTask(final String result) {
-        Log.d("ChatRoomTest", "In the Start of Method");
         try {
             //This is the result from the web service
             JSONObject root = new JSONObject(result);
-            if(root.has("result")) {
-//                Log.d("ChatRoomTest", "IN IF, " + root.toString());
-                JSONArray arr = root.getJSONArray ("result");
+            if (root.has("result")) {
+                JSONArray arr = root.getJSONArray("result");
                 List<ChatRoom> theChatRooms = new ArrayList<>();
                 for (int i = 0; i < arr.length(); i++) {
                     JSONObject obj = new JSONObject(arr.get(i).toString());
@@ -153,14 +181,11 @@ public class ChatRoomFragment extends Fragment {
                     String chatName = obj.getString("chatname");
 
                     JSONArray members = obj.getJSONArray("members");
-                    Log.d("ChatRoomTest", "ChatId: , " + chatId + "members Lenght: " + members.length());
-                    Log.d("ChatRoomTest", "messgage: " + members.toString());
                     String users = "";
-                    for(int j = 0; j < members.length(); j++) {
+                    for (int j = 0; j < members.length(); j++) {
                         JSONObject mem = new JSONObject(members.get(j).toString());
                         String username = mem.getString("username");
                         users += username + ", ";
-                        Log.d("ChatRoomTest", "USERNAME: , " + users);
                     }
 //
                     theChatRooms.add(new ChatRoom.Builder(Integer.parseInt(chatId), users)
@@ -174,9 +199,6 @@ public class ChatRoomFragment extends Fragment {
                 mMessageRecycler.setAdapter(mMessageAdapter);
                 mMessageRecycler.scrollToPosition(0);
 
-
-//
-
             } else {
                 Log.e("ERROR!", "No response");
                 //notify user
@@ -189,6 +211,11 @@ public class ChatRoomFragment extends Fragment {
         }
     }
 
+    /**
+     * This is default on attach method.
+     *
+     * @param context default.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -200,6 +227,9 @@ public class ChatRoomFragment extends Fragment {
         }
     }
 
+    /**
+     * This is default on detach.
+     */
     @Override
     public void onDetach() {
         super.onDetach();

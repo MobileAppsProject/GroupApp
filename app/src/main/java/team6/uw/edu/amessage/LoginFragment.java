@@ -21,12 +21,9 @@ import me.pushy.sdk.Pushy;
 import team6.uw.edu.amessage.model.Credentials;
 import team6.uw.edu.amessage.utils.SendPostAsyncTask;
 
-
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnLoginFragmentInteractionListener} interface
- * to handle interaction events.
+ * This class allow for you to check login credential and call the backend to check
+ * for all the specific details.
  */
 public class LoginFragment extends Fragment {
 
@@ -38,11 +35,21 @@ public class LoginFragment extends Fragment {
     public String mMemberID;
     private String mUserName;
 
+    /**
+     * Default constructor.
+     */
     public LoginFragment() {
         // Required empty public constructor
     }
 
-
+    /**
+     * This is the first thing called to set up the layout.
+     *
+     * @param inflater           the layout to be inflated.
+     * @param container          the container to inflate the layout in.
+     * @param savedInstanceState the saved info being passed in.
+     * @return the inflated layout.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -75,6 +82,9 @@ public class LoginFragment extends Fragment {
 
     }
 
+    /**
+     * First thing to be called and will login user if haven't logged out.
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -99,7 +109,10 @@ public class LoginFragment extends Fragment {
                     .build());
         }
     }
-    // Login helper method
+
+    /**
+     * Login helper method
+     */
     private void doLogin(Credentials credentials) {
         //build the web service URL
         Uri uri = new Uri.Builder()
@@ -121,7 +134,9 @@ public class LoginFragment extends Fragment {
                 .build().execute();
     }
 
-    //This will call the the register fragment to be called.
+    /**
+     * This will call the the register fragment to be called.
+     */
     public void onRegisterButtonClicked(View view) {
         if (mListener != null) {
             //check if valid email was sent.
@@ -130,14 +145,19 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    //This will call the the Login/Success fragment to be called.
+    /**
+     * This will call the the Login/Success fragment to be called.
+     */
     public void onLoginButtonClicked(View view) {
         if (mListener != null) {
             attemptLogin(view);
 
         }
     }
-    // Stores credentials in shared preferences
+
+    /**
+     * Stores credentials in shared preferences
+     */
     private void saveCredentials(final Credentials credentials) {
         SharedPreferences prefs =
                 getActivity().getSharedPreferences(
@@ -147,6 +167,12 @@ public class LoginFragment extends Fragment {
         prefs.edit().putString(getString(R.string.keys_prefs_email), credentials.getEmail()).apply();
         prefs.edit().putString(getString(R.string.keys_prefs_password), credentials.getPassword()).apply();
     }
+
+    /**
+     * This will attempt the login and check all the user credentials are correct.
+     *
+     * @param theButton the login button being clicked.
+     */
     private void attemptLogin(final View theButton) {
 
         EditText emailEdit = getActivity().findViewById(R.id.fragLogin_email_editText);
@@ -156,12 +182,11 @@ public class LoginFragment extends Fragment {
         if (emailEdit.getText().length() == 0) {
             hasError = true;
             emailEdit.setError("Field must not be empty.");
-            //TODO When making custom webservice use this method to check for full email.
-            //!isEmailValid(emailEdit.getText().toString())
-        }  else if (emailEdit.getText().toString().chars().filter(ch -> ch =='@').count() != 1) {
+        } else if (emailEdit.getText().toString().chars().filter(ch -> ch == '@').count() != 1) {
             hasError = true;
             emailEdit.setError("Field must contain a valid email address.");
         }
+
         if (passwordEdit.getText().length() == 0) {
             hasError = true;
             passwordEdit.setError("Field must not be empty.");
@@ -179,6 +204,11 @@ public class LoginFragment extends Fragment {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    /**
+     * Default on attach.
+     *
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -190,6 +220,9 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    /**
+     * Default on detach.
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -199,10 +232,11 @@ public class LoginFragment extends Fragment {
 
     /**
      * Handle errors that may occur during the AsyncTask.
+     *
      * @param result the error message provide from the AsyncTask
      */
     private void handleErrorsInTask(String result) {
-        Log.e("ASYNC_TASK_ERROR",  result);
+        Log.e("ASYNC_TASK_ERROR", result);
     }
 
     /**
@@ -215,6 +249,7 @@ public class LoginFragment extends Fragment {
     /**
      * Handle onPostExecute of the AsynceTask. The result from our webservice is
      * a JSON formatted String. Parse it for success or failure.
+     *
      * @param result the JSON formatted String response from the web service
      */
     private void handleLoginOnPost(String result) {
@@ -226,16 +261,16 @@ public class LoginFragment extends Fragment {
             if (success) {
                 //Login was successful. Switch to the loadSuccessFragment.
                 mJwt = resultsJSON.getString(
-                            getString(R.string.keys_json_login_jwt));
+                        getString(R.string.keys_json_login_jwt));
 
                 mUserId = resultsJSON.getString(
-                            getString(R.string.keys_json_login_userid));
+                        getString(R.string.keys_json_login_userid));
 
                 mUserName = resultsJSON.getString(
                         "username");
                 mCredentials = new Credentials.Builder(mCredentials.getEmail(), mCredentials.getPassword())
-                                .addUsername(mUserName)
-                                .build();
+                        .addUsername(mUserName)
+                        .build();
 
                 Log.d("UserID", "My UserId: " + mUserId);
                 new RegisterForPushNotificationsAsync().execute();
@@ -251,7 +286,7 @@ public class LoginFragment extends Fragment {
         } catch (JSONException e) {
             //It appears that the web service did not return a JSON formatted
             //String or it did not have what we expected in it.
-            Log.e("JSON_PARSE_ERROR",  result
+            Log.e("JSON_PARSE_ERROR", result
                     + System.lineSeparator()
                     + e.getMessage());
 
@@ -261,10 +296,15 @@ public class LoginFragment extends Fragment {
         }
     }
 
+    /**
+     * This will handle push token on post method.
+     *
+     * @param result the new pushy token.
+     */
     private void handlePushyTokenOnPost(String result) {
         try {
 
-            Log.d("JSON result",result);
+            Log.d("JSON result", result);
             JSONObject resultsJSON = new JSONObject(result);
             boolean success = resultsJSON.getBoolean("success");
 
@@ -282,7 +322,7 @@ public class LoginFragment extends Fragment {
         } catch (JSONException e) {
             //It appears that the web service didn’t return a JSON formatted String
             //or it didn’t have what we expected in it.
-            Log.e("JSON_PARSE_ERROR",  result
+            Log.e("JSON_PARSE_ERROR", result
                     + System.lineSeparator()
                     + e.getMessage());
 
@@ -304,11 +344,17 @@ public class LoginFragment extends Fragment {
      */
     public interface OnLoginFragmentInteractionListener extends WaitFragment.OnFragmentInteractionListener {
         void onLoginSuccess(Credentials theUser, String jwt);
+
         void onRegisterClick();
+
         void onWaitFragmentInteractionShow();
+
         void onWaitFragmentInteractionHide();
     }
 
+    /**
+     * Async method to handle registering for push notifications.
+     */
     private class RegisterForPushNotificationsAsync extends AsyncTask<Void, String, String> {
 
         protected String doInBackground(Void... params) {
@@ -320,8 +366,7 @@ public class LoginFragment extends Fragment {
 
                 //subscribe to a topic (this is a Blocking call)
                 Pushy.subscribe("all", getActivity().getApplicationContext());
-            }
-            catch (Exception exc) {
+            } catch (Exception exc) {
 
                 cancel(true);
                 // Return exc to onCancelled
@@ -332,12 +377,22 @@ public class LoginFragment extends Fragment {
             return deviceToken;
         }
 
+        /**
+         * Will cancel its current progress.
+         *
+         * @param errorMsg the error.
+         */
         @Override
         protected void onCancelled(String errorMsg) {
             super.onCancelled(errorMsg);
-            Log.d("PhishApp", "Error getting Pushy Token: " + errorMsg);
+            Log.d("aMessage", "Error getting Pushy Token: " + errorMsg);
         }
 
+        /**
+         * This will be called when the async method is finished.
+         *
+         * @param deviceToken the new token register to the device/user.
+         */
         @Override
         protected void onPostExecute(String deviceToken) {
             // Log it for debugging purposes
@@ -367,10 +422,6 @@ public class LoginFragment extends Fragment {
                     .onCancelled(LoginFragment.this::handleErrorsInTask)
                     .addHeaderField("authorization", mJwt)
                     .build().execute();
-
-
-//            saveCredentials(mCredentials);
-//            mListener.onLoginSuccess(mCredentials, mJwt);
         }
     }
 

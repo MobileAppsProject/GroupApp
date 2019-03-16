@@ -8,12 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import team6.uw.edu.amessage.model.Credentials;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * to handle interaction events.
+ * This will be used in the login fragment to load in the text fields that the user
+ * used to register with.
  */
 public class SuccessFragment extends Fragment {
 
@@ -23,6 +23,15 @@ public class SuccessFragment extends Fragment {
         // Required empty public constructor
     }
 
+    /**
+     * This will the first thing that is created and will set up all the information
+     * for the user to be prompted to login page.
+     *
+     * @param inflater           the layout to inflate.
+     * @param container          the container to inflate the layout in.
+     * @param savedInstanceState the saved information sent to the fragment.
+     * @return the view/layout that has been inflated.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

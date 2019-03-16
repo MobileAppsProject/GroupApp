@@ -9,15 +9,24 @@ import android.util.Log;
 import me.pushy.sdk.Pushy;
 import team6.uw.edu.amessage.model.Credentials;
 
+/**
+ * This is the main class that will be used for login and register.
+ */
 public class MainActivity extends AppCompatActivity implements
         LoginFragment.OnLoginFragmentInteractionListener,
         RegisterFragment.OnRegisterFragmentInteractionListener,
-        WaitFragment.OnFragmentInteractionListener{
+        WaitFragment.OnFragmentInteractionListener {
 
     private boolean mLoadFromChatNotification = false;
     private static final String TAG = MainActivity.class.getSimpleName();
 
 
+    /**
+     * This is the first thing to be called when first loaded and will set up
+     * all the necessary information.
+     *
+     * @param savedInstanceState the incoming saved information.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * This is called when a user clicks to register a new account.
+     */
     @Override
     public void onRegisterClick() {
         Bundle args = new Bundle();
@@ -51,7 +63,10 @@ public class MainActivity extends AppCompatActivity implements
         transaction.commit();
     }
 
-    //This method could be used for communicating between fragments
+    /**
+     * This method loads the home activity when the user has
+     * successfully logged into the app.
+     */
     @Override
     public void onLoginSuccess(Credentials theUser, String jwt) {
         Bundle args = new Bundle();
@@ -72,6 +87,12 @@ public class MainActivity extends AppCompatActivity implements
         finish();
     }
 
+    /**
+     * This will load the login fragment when the user has succesfully registered a new
+     * account.
+     *
+     * @param theUser the current user information.
+     */
     @Override
     public void onRegisterSuccess(Credentials theUser) {
 
@@ -81,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements
         for (int i = 0; i < count; ++i) {
             getSupportFragmentManager().popBackStack();
         }
-        
+
         args.putSerializable("Login", theUser);
         RegSuccessInfoFragment theFragment = new RegSuccessInfoFragment();
         theFragment.setArguments(args);
@@ -90,6 +111,9 @@ public class MainActivity extends AppCompatActivity implements
         transaction.commit();
     }
 
+    /**
+     * This will add a fragment loading screen.
+     */
     @Override
     public void onWaitFragmentInteractionShow() {
         getSupportFragmentManager()
@@ -99,6 +123,9 @@ public class MainActivity extends AppCompatActivity implements
                 .commit();
     }
 
+    /**
+     * This will remove the fragment loading screen.
+     */
     @Override
     public void onWaitFragmentInteractionHide() {
         getSupportFragmentManager()

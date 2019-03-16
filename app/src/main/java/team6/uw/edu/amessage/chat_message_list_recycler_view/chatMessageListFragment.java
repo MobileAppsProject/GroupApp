@@ -18,18 +18,13 @@ import java.util.List;
 import team6.uw.edu.amessage.R;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * This is the list of chat messages to display all the chats inside that chat room.
  */
 public class chatMessageListFragment extends Fragment {
 
     public static final String ARG_MESSAGES_LIST = "messagesLists";
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     private List<Messages> mMessagesList;
-    // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
 
@@ -40,8 +35,12 @@ public class chatMessageListFragment extends Fragment {
     public chatMessageListFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
+    /**
+     * This is the static constructor allowing to set up the list.
+     *
+     * @param columnCount the count.
+     * @return the fragment with the sent bundle.
+     */
     public static chatMessageListFragment newInstance(int columnCount) {
         chatMessageListFragment fragment = new chatMessageListFragment();
         Bundle args = new Bundle();
@@ -50,19 +49,30 @@ public class chatMessageListFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * This will be called on the first time the frag is created.
+     *
+     * @param savedInstanceState The incoming saved instance.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("recView", "Before if!");
         if (getArguments() != null) {
             mMessagesList = new ArrayList<Messages>(
                     Arrays.asList((Messages[]) getArguments().getSerializable(ARG_MESSAGES_LIST)));
         } else {
-            Log.d("recView", "theMessage list default");
             mMessagesList = MessagesGenerator.CHAT_MESSAGES;
         }
     }
 
+    /**
+     * This will call the recycler view to set up the list.
+     *
+     * @param inflater           to show the fragment to the user.
+     * @param container          the container to put the frag into.
+     * @param savedInstanceState the bundle passed to the fragment.
+     * @return the layout to send back to the user.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -82,7 +92,11 @@ public class chatMessageListFragment extends Fragment {
         return view;
     }
 
-
+    /**
+     * Default on attach.
+     *
+     * @param context the context currently.
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -94,6 +108,9 @@ public class chatMessageListFragment extends Fragment {
         }
     }
 
+    /**
+     * This is the default on detach.
+     */
     @Override
     public void onDetach() {
         super.onDetach();
@@ -111,7 +128,6 @@ public class chatMessageListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onListFragmentInteraction(Messages item);
     }
 }

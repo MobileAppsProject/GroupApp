@@ -62,7 +62,6 @@ public class ContactsFragment extends Fragment {
     private String mJwToken;
 
 
-
     public ContactsFragment() {
         // Required empty public constructor
     }
@@ -136,7 +135,7 @@ public class ContactsFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof ContactsFragment.OnPendingListFragmentInteractionListener) {
             mPendingListener = (ContactsFragment.OnPendingListFragmentInteractionListener) context;
-        } else if(context instanceof ContactsFragment.OnSentListFragmentInteractionListener) {
+        } else if (context instanceof ContactsFragment.OnSentListFragmentInteractionListener) {
             mSentListener = (ContactsFragment.OnSentListFragmentInteractionListener) context;
 
         } else {

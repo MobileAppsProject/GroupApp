@@ -14,22 +14,34 @@ import team6.uw.edu.amessage.contact.ContactDetail;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link ContactDetail} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ * This class is a recycler view to allow users to add a chat. Allows for the list to be
+ * recyclable.
  */
 public class MyAddChatRecyclerViewAdapter extends RecyclerView.Adapter<MyAddChatRecyclerViewAdapter.ViewHolder> {
 
     private final List<ContactDetail> mValues;
     private final OnListFragmentInteractionListener mListener;
-    private int selectedPos = RecyclerView.NO_POSITION;
     int selected_position = 0;
+    private int selectedPos = RecyclerView.NO_POSITION;
 
+    /**
+     * This is the constructor to pass in a list of contact details for the user to select.
+     *
+     * @param items the list of contacts.
+     * @param listener the on click listner.
+     */
     public MyAddChatRecyclerViewAdapter(List<ContactDetail> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
 
+    /**
+     * This is default on create View Holder.
+     *
+     * @param parent the incoming view layout.
+     * @param viewType the type of layout.
+     * @return A new viewholder with the new list.
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -37,6 +49,12 @@ public class MyAddChatRecyclerViewAdapter extends RecyclerView.Adapter<MyAddChat
         return new ViewHolder(view);
     }
 
+    /**
+     * This will set all the values in the recycler view. Set up a onclick listener for
+     * each one.
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
@@ -48,8 +66,6 @@ public class MyAddChatRecyclerViewAdapter extends RecyclerView.Adapter<MyAddChat
         } else {
             holder.mLinearLayout.setBackgroundResource(R.drawable.not_selected);
         }
-//        holder.mContentView.setBackgroundColor(holder.mItem.isSelected() ? Color.CYAN : Color.WHITE);
-//        holder.
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,7 +75,6 @@ public class MyAddChatRecyclerViewAdapter extends RecyclerView.Adapter<MyAddChat
                     // fragment is attached to one) that an item has been selected.
                     mListener.onListFragmentInteraction(holder.mItem);
                     holder.mItem.setSelected(!holder.mItem.isSelected());
-//                    holder.mContentView.setBackgroundColor(holder.mItem.isSelected() ? Color.CYAN : Color.WHITE);
                     if (holder.mItem.isSelected()) {
                         holder.mLinearLayout.setBackgroundResource(R.drawable.selected);
 
@@ -71,11 +86,19 @@ public class MyAddChatRecyclerViewAdapter extends RecyclerView.Adapter<MyAddChat
         });
     }
 
+    /**
+     * Allows for the number of items in the list.
+     *
+     * @return the size of the recycler view.
+     */
     @Override
     public int getItemCount() {
         return mValues.size();
     }
 
+    /**
+     * This will hold the user items to store there information into.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
@@ -83,15 +106,22 @@ public class MyAddChatRecyclerViewAdapter extends RecyclerView.Adapter<MyAddChat
         public final LinearLayout mLinearLayout;
         public ContactDetail mItem;
 
+        /**
+         * Constructor to set up all the values.
+         * @param view
+         */
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.item_number);
             mContentView = (TextView) view.findViewById(R.id.content);
             mLinearLayout = (LinearLayout) view.findViewById(R.id.linearLayout_backGround);
-//            this.setIsRecyclable(false);
         }
 
+        /**
+         * This is the default to string to display the items.
+         * @return
+         */
         @Override
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
